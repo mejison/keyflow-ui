@@ -1,0 +1,65 @@
+{
+  "EN": {
+    "words": [
+      "keyboard",
+      "practice",
+      "typing",
+      "speed",
+      "accuracy",
+      "performance",
+      "improve",
+      "challenge",
+      "focus",
+      "effort"
+    ],
+    "lines": [
+      "The quick brown fox jumps over the lazy dog.",
+      "Typing fast requires focus and regular practice.",
+      "Accuracy is more important than sheer speed.",
+      "Mistakes are part of learning, correct them carefully.",
+      "Consistency is key to improving your typing skills."
+    ]
+  },
+  "UA": {
+    "words": [
+      "клавіатура",
+      "тренування",
+      "друк",
+      "швидкість",
+      "точність",
+      "результат",
+      "покращення",
+      "виклик",
+      "фокус",
+      "зусилля"
+    ],
+    "lines": [
+      "Швидкий друк допомагає економити час на роботі.",
+      "Точність важливіша за швидкість під час навчання.",
+      "Регулярне тренування покращує навички друку.",
+      "Не бійтеся помилок, вони частина процесу.",
+      "Фокус і концентрація допомагають досягати результату."
+    ]
+  },
+  "ES": {
+    "words": [
+      "teclado",
+      "práctica",
+      "escribir",
+      "velocidad",
+      "precisión",
+      "rendimiento",
+      "mejorar",
+      "desafío",
+      "concentración",
+      "esfuerzo"
+    ],
+    "lines": [
+      "La práctica constante mejora la velocidad de escritura.",
+      "La precisión es más importante que la rapidez.",
+      "No temas cometer errores, forman parte del aprendizaje.",
+      "El enfoque y la concentración aumentan el rendimiento.",
+      "Escribir con todos los dedos requiere paciencia y entrenamiento."
+    ]
+  }
+}
