@@ -98,29 +98,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useLanguageStore } from '@/stores/language'
 import { useTypingStore } from '@/stores/typing'
 import { typingConfig } from '@/config/typing'
-import textsData from '@/assets/texts.json'
 
 const languageStore = useLanguageStore()
 const typingStore = useTypingStore()
 const typingAreaRef = ref<HTMLDivElement>()
 const lastKeyWasTab = ref(false)
 
-const currentText = computed(() => {
-  const langKey = languageStore.currentLanguage.toUpperCase() as 'EN' | 'UA' | 'ES'
-  const lines = textsData[langKey]?.lines || textsData.EN.lines
-  return lines.join(' ')
+// Ініціалізація тексту при завантаженні
+onMounted(() => {
+  typingStore.generateNewText()
 })
 
-// Встановлюємо текст при зміні мови
-watch(currentText, (newText) => {
-  typingStore.setText(newText)
+// Генеруємо новий текст при зміні набору слів
+watch(() => languageStore.currentWordSet, () => {
+  typingStore.generateNewText()
   // Знімаємо фокус щоб випадково не запустити таймер
   typingAreaRef.value?.blur()
-}, { immediate: true })
+})
 
 const handleBlur = () => {
   // Дозволяємо зняти фокус
@@ -165,7 +163,7 @@ const focusArea = () => {
 }
 
 const restart = () => {
-  typingStore.reset()
+  typingStore.generateNewText()
 }
 
 </script>

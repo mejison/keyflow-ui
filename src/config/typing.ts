@@ -1,6 +1,6 @@
 export const typingConfig = {
   // Час на тест в секундах
-  testDuration: 60,
+  testDuration: 30,
   
   // Середня довжина слова для розрахунку WPM
   averageWordLength: 5,

@@ -1,10 +1,35 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { typingConfig } from '@/config/typing'
+import { useLanguageStore } from '@/stores/language'
+import { typingTestsApi } from '@/services/api'
+import english1k from '@/assets/english_1k.json'
+import english5k from '@/assets/english_5k.json'
+import english10k from '@/assets/english_10k.json'
 
 interface CharState {
   char: string
   isCorrect: boolean | null // null = не введено, true = правильно, false = помилка
+}
+
+// Словники слів
+const wordSets = {
+  '1k': english1k.words,
+  '5k': english5k.words,
+  '10k': english10k.words,
+}
+
+// Генератор "речень" з випадкових слів
+const generateText = (wordCount: number, wordSet: '1k' | '5k' | '10k'): string => {
+  const words = wordSets[wordSet]
+  const result: string[] = []
+  
+  for (let i = 0; i < wordCount; i++) {
+    const randomWord = words[Math.floor(Math.random() * words.length)]
+    result.push(randomWord)
+  }
+  
+  return result.join(' ')
 }
 
 export const useTypingStore = defineStore('typing', () => {
@@ -58,6 +83,13 @@ export const useTypingStore = defineStore('typing', () => {
     reset()
   }
 
+  const generateNewText = () => {
+    const languageStore = useLanguageStore()
+    const wordSet = languageStore.currentWordSet
+    text.value = generateText(50, wordSet) // Генеруємо 50 слів
+    reset()
+  }
+
   const startTimer = () => {
     if (timerInterval.value) return
     
@@ -77,9 +109,33 @@ export const useTypingStore = defineStore('typing', () => {
     }
   }
 
-  const finishTest = () => {
+  const finishTest = async () => {
     isFinished.value = true
     stopTimer()
+
+    // Save test results to backend if user is authenticated
+    const token = localStorage.getItem('auth_token')
+    if (token) {
+      try {
+        // Calculate final statistics
+        const totalWords = userInput.value.trim().split(/\s+/).length
+        const correctWords = Math.round((correctChars.value / typingConfig.averageWordLength))
+        const incorrectWords = totalWords - correctWords
+
+        await typingTestsApi.saveTest({
+          wpm: wpm.value,
+          accuracy: accuracy.value,
+          duration: typingConfig.testDuration,
+          correct_words: correctWords,
+          incorrect_words: Math.max(0, incorrectWords),
+          total_words: totalWords,
+          text_content: text.value.substring(0, 500) // Send first 500 chars
+        })
+      } catch (error) {
+        console.error('Failed to save test results:', error)
+        // Don't show error to user, just log it
+      }
+    }
   }
 
   const handleKeyPress = (key: string) => {
@@ -105,9 +161,10 @@ export const useTypingStore = defineStore('typing', () => {
 
     // Якщо текст закінчився, генеруємо ще
     if (userInput.value.length >= text.value.length - typingConfig.textBufferThreshold) {
-      // Додаємо ще текст, щоб можна було продовжити друкувати
-      const words = text.value.split(' ')
-      text.value += ' ' + words.slice(0, typingConfig.wordsToAddWhenExtending).join(' ')
+      // Додаємо ще слів
+      const languageStore = useLanguageStore()
+      const wordSet = languageStore.currentWordSet
+      text.value += ' ' + generateText(typingConfig.wordsToAddWhenExtending, wordSet)
     }
   }
 
@@ -133,6 +190,7 @@ export const useTypingStore = defineStore('typing', () => {
     incorrectChars,
     accuracy,
     wpm,
+    generateNewText,
     setText,
     handleKeyPress,
     reset,

@@ -49,8 +49,7 @@ const error = ref('')
 
 onMounted(async () => {
   const provider = route.params.provider as 'google' | 'github'
-  const code = route.query.code as string
-  const state = route.query.state as string
+  const token = route.query.token as string
   const errorParam = route.query.error as string
 
   // Check for errors from OAuth provider
@@ -60,19 +59,37 @@ onMounted(async () => {
     return
   }
 
-  // Validate required parameters
+  // Check if we have a token (new flow - backend returns token directly)
+  if (token) {
+    try {
+      // Token is provided directly, save it
+      localStorage.setItem('auth_token', token)
+      
+      // Fetch user data
+      await authStore.fetchUser()
+      
+      // Redirect to profile on success
+      router.push('/profile')
+      return
+    } catch (err: any) {
+      error.value = err.message || 'Authentication failed. Please try again.'
+      loading.value = false
+      return
+    }
+  }
+
+  // Fallback: check for code (old flow - for backwards compatibility)
+  const code = route.query.code as string
+  
   if (!code) {
-    error.value = 'Authorization code not received'
+    error.value = 'Authorization token or code not received'
     loading.value = false
     return
   }
 
-  // Verify state to prevent CSRF attacks
-  const savedState = sessionStorage.getItem('oauth_state')
-  sessionStorage.removeItem('oauth_state')
-
-  if (!savedState || savedState !== state) {
-    error.value = 'Invalid state parameter. Please try again.'
+  // Validate provider
+  if (!provider || !['google', 'github'].includes(provider)) {
+    error.value = 'Invalid OAuth provider'
     loading.value = false
     return
   }
@@ -80,6 +97,8 @@ onMounted(async () => {
   try {
     // Send code to backend for token exchange
     await authStore.handleOAuthCallback(provider, code)
+    
+    // Redirect to profile on success
     router.push('/profile')
   } catch (err: any) {
     error.value = err.message || 'Authentication failed. Please try again.'

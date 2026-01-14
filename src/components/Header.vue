@@ -11,6 +11,12 @@
       </RouterLink>
       
       <div class="flex items-center gap-6">
+        <RouterLink 
+          to="/leaderboard" 
+          class="text-slate-400 hover:text-slate-200 transition-colors text-sm font-medium"
+        >
+          🏆 Leaderboard
+        </RouterLink>
         <LanguageSelector />
         <RouterLink 
           v-if="!authStore.isAuthenticated"

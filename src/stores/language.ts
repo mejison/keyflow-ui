@@ -1,26 +1,26 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export type Language = 'en' | 'ua' | 'es'
+export type WordSet = '1k' | '5k' | '10k'
 
 export const useLanguageStore = defineStore('language', () => {
-  const currentLanguage = ref<Language>('en')
+  const currentWordSet = ref<WordSet>('1k')
 
-  const setLanguage = (lang: Language) => {
-    currentLanguage.value = lang
-    localStorage.setItem('language', lang)
+  const setWordSet = (wordSet: WordSet) => {
+    currentWordSet.value = wordSet
+    localStorage.setItem('wordSet', wordSet)
   }
 
-  const initLanguage = () => {
-    const saved = localStorage.getItem('language') as Language
-    if (saved && ['en', 'ua', 'es'].includes(saved)) {
-      currentLanguage.value = saved
+  const initWordSet = () => {
+    const saved = localStorage.getItem('wordSet') as WordSet
+    if (saved && ['1k', '5k', '10k'].includes(saved)) {
+      currentWordSet.value = saved
     }
   }
 
   return {
-    currentLanguage,
-    setLanguage,
-    initLanguage,
+    currentWordSet,
+    setWordSet,
+    initWordSet,
   }
 })
