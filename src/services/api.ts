@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios'
+import { useToast } from '@/composables/useToast'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
@@ -26,19 +27,85 @@ api.interceptors.request.use(
   }
 )
 
-// Handle response errors
+// Handle response errors globally
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      // Unauthorized - clear token only if we're already authenticated
-      // Don't redirect on login page (that would cause refresh loop)
-      const token = localStorage.getItem('auth_token')
-      if (token && !window.location.pathname.includes('/login')) {
-        localStorage.removeItem('auth_token')
-        window.location.href = '/login'
-      }
+    const toast = useToast()
+    const status = error.response?.status
+    const message = (error.response?.data as any)?.message
+
+    // Network error (no response)
+    if (!error.response) {
+      toast.error('Network error. Please check your connection.')
+      return Promise.reject(error)
     }
+
+    // Handle specific status codes
+    switch (status) {
+      case 401:
+        // Unauthorized - session expired
+        const token = localStorage.getItem('auth_token')
+        if (token && !window.location.pathname.includes('/login')) {
+          // Save intended destination for redirect after login
+          const intendedRoute = window.location.pathname + window.location.search
+          if (intendedRoute !== '/' && !intendedRoute.includes('/login')) {
+            sessionStorage.setItem('intended_route', intendedRoute)
+          }
+          
+          // Clear auth state
+          localStorage.removeItem('auth_token')
+          
+          // Notify user
+          toast.error('Session expired. Please login again.')
+          
+          // Redirect to login
+          setTimeout(() => {
+            window.location.href = '/login'
+          }, 1000)
+        }
+        break
+
+      case 403:
+        toast.error('Access denied. You don\'t have permission.')
+        break
+
+      case 404:
+        // Only show toast for API 404s, not route 404s
+        if (error.config?.url) {
+          toast.error('Resource not found.')
+        }
+        break
+
+      case 422:
+        // Validation errors - handled by individual forms
+        // Don't show global toast for these
+        break
+
+      case 429:
+        toast.warning('Too many requests. Please slow down.')
+        break
+
+      case 500:
+        toast.error(message || 'Server error. Please try again later.')
+        break
+
+      case 502:
+      case 503:
+        toast.error('Service temporarily unavailable. Please try again.')
+        break
+
+      case 504:
+        toast.error('Request timeout. Please try again.')
+        break
+
+      default:
+        // Generic error for other status codes
+        if (status && status >= 400) {
+          toast.error(message || 'Something went wrong. Please try again.')
+        }
+    }
+
     return Promise.reject(error)
   }
 )
@@ -317,6 +384,55 @@ export const leaderboardApi = {
     const response = await api.get<ApiResponse<UserRank>>('/api/v1/leaderboard/my-rank', {
       params: { period }
     })
+    return response.data
+  },
+}
+
+// Settings API methods
+export const settingsApi = {
+  // Get user settings
+  getSettings: async () => {
+    const response = await api.get<ApiResponse<{
+      test_duration: number
+      show_errors: boolean
+      sound_enabled: boolean
+      smooth_caret: boolean
+      quick_restart: boolean
+      font_size: string
+    }>>('/api/v1/settings')
+    return response.data
+  },
+
+  // Update settings
+  updateSettings: async (settings: {
+    test_duration?: number
+    show_errors?: boolean
+    sound_enabled?: boolean
+    smooth_caret?: boolean
+    quick_restart?: boolean
+    font_size?: string
+  }) => {
+    const response = await api.put<ApiResponse<{
+      test_duration: number
+      show_errors: boolean
+      sound_enabled: boolean
+      smooth_caret: boolean
+      quick_restart: boolean
+      font_size: string
+    }>>('/api/v1/settings', settings)
+    return response.data
+  },
+
+  // Reset settings to defaults
+  resetSettings: async () => {
+    const response = await api.delete<ApiResponse<{
+      test_duration: number
+      show_errors: boolean
+      sound_enabled: boolean
+      smooth_caret: boolean
+      quick_restart: boolean
+      font_size: string
+    }>>('/api/v1/settings')
     return response.data
   },
 }

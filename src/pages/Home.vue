@@ -12,13 +12,8 @@
       </div>
 
       <!-- Typing Area Card -->
-      <div class="bg-slate-800/40 backdrop-blur-md rounded-3xl shadow-2xl border border-slate-700/30 p-12 mb-10">
+      <div class="bg-slate-800/40 backdrop-blur-md rounded-3xl shadow-2xl border border-slate-700/30 p-12">
         <TypingArea />
-      </div>
-
-      <!-- Stats Bar -->
-      <div class="bg-slate-800/40 backdrop-blur-md rounded-3xl shadow-xl border border-slate-700/30 p-10">
-        <StatsBar />
       </div>
     </div>
   </DefaultLayout>
@@ -27,6 +22,5 @@
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import TypingArea from '@/components/TypingArea.vue'
-import StatsBar from '@/components/StatsBar.vue'
 import SelectLanguage from '@/components/LanguageSelector.vue'
 </script>

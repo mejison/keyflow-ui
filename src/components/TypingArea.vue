@@ -30,7 +30,8 @@
       @keydown="handleKeyDown"
       @click="focusArea"
       @blur="handleBlur"
-      class="rounded-2xl p-12 font-mono text-2xl md:text-3xl leading-[1.8] focus:outline-none focus:ring-2 focus:ring-blue-500/30 cursor-text transition-all min-h-[320px] bg-slate-900/30 select-none break-words"
+      :style="{ fontSize: fontSizeMap[settingsStore.settings.fontSize] + 'px' }"
+      class="rounded-2xl p-12 font-mono leading-[1.8] focus:outline-none focus:ring-2 focus:ring-blue-500/30 cursor-text transition-all min-h-[320px] bg-slate-900/30 select-none break-words"
       :class="{ 
         'pointer-events-none opacity-50': typingStore.isFinished,
         'opacity-75': !typingStore.isStarted 
@@ -101,12 +102,20 @@
 import { onMounted, ref, watch } from 'vue'
 import { useLanguageStore } from '@/stores/language'
 import { useTypingStore } from '@/stores/typing'
+import { useSettingsStore } from '@/stores/settings'
 import { typingConfig } from '@/config/typing'
 
 const languageStore = useLanguageStore()
 const typingStore = useTypingStore()
+const settingsStore = useSettingsStore()
 const typingAreaRef = ref<HTMLDivElement>()
 const lastKeyWasTab = ref(false)
+
+const fontSizeMap = {
+  small: 20,
+  medium: 24,
+  large: 32
+}
 
 // Ініціалізація тексту при завантаженні
 onMounted(() => {

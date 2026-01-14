@@ -74,8 +74,13 @@
           <p class="text-red-400">{{ error }}</p>
         </div>
 
-        <div v-else-if="entries.length === 0" class="p-8 text-center">
-          <p class="text-slate-400">No entries yet for this period</p>
+        <div v-else-if="entries.length === 0" class="p-12 text-center">
+          <div class="text-6xl mb-4">🏆</div>
+          <h3 class="text-xl font-semibold text-slate-300 mb-2">No entries yet</h3>
+          <p class="text-slate-400 mb-6">Be the first to complete a test and claim your spot!</p>
+          <button @click="$router.push('/')" class="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-white font-medium transition-all">
+            Start Typing Test
+          </button>
         </div>
 
         <div v-else class="overflow-x-auto">

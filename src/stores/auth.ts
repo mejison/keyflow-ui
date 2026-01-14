@@ -2,6 +2,9 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { authApi, api, type User as ApiUser } from '@/services/api'
 import { AxiosError } from 'axios'
+import { useToast } from '@/composables/useToast'
+import { stopSessionMonitoring, startSessionMonitoring } from '@/utils/session'
+import { analytics } from '@/utils/analytics'
 
 export interface User {
   id: string | number
@@ -17,6 +20,7 @@ interface ErrorResponse {
 }
 
 export const useAuthStore = defineStore('auth', () => {
+  const toast = useToast()
   const user = ref<User | null>(null)
   const isAuthenticated = computed(() => user.value !== null)
   const loading = ref(false)
@@ -58,10 +62,18 @@ export const useAuthStore = defineStore('auth', () => {
       
       // Save user
       user.value = convertUser(response.data.user)
+      toast.success(`Welcome back, ${user.value.name}!`)
+      
+      // Analytics
+      analytics.login('email')
+      
+      // Start session monitoring
+      startSessionMonitoring()
       
       return true
     } catch (err) {
       error.value = handleError(err)
+      toast.error(error.value)
       throw new Error(error.value)
     } finally {
       loading.value = false
@@ -81,10 +93,18 @@ export const useAuthStore = defineStore('auth', () => {
       
       // Save user
       user.value = convertUser(response.data.user)
+      toast.success(`Account created! Welcome, ${user.value.name}!`)
+      
+      // Analytics
+      analytics.signup('email')
+      
+      // Start session monitoring
+      startSessionMonitoring()
       
       return true
     } catch (err) {
       error.value = handleError(err)
+      toast.error(error.value)
       throw new Error(error.value)
     } finally {
       loading.value = false
@@ -130,9 +150,15 @@ export const useAuthStore = defineStore('auth', () => {
         provider,
       }
       
+      toast.success(`Welcome, ${user.value.name}!`)
+      
+      // Analytics
+      analytics.login(provider)
+      
       return true
     } catch (err) {
       error.value = handleError(err)
+      toast.error('OAuth authentication failed')
       throw new Error(error.value)
     } finally {
       loading.value = false
@@ -160,14 +186,20 @@ export const useAuthStore = defineStore('auth', () => {
 
   const logout = async () => {
     loading.value = true
+      
+      // Analytics
+      analytics.logout()
     error.value = null
     try {
       await authApi.logout()
+      toast.info('Logged out successfully')
     } catch (err) {
       console.error('Logout error:', err)
     } finally {
       user.value = null
       localStorage.removeItem('auth_token')
+      sessionStorage.removeItem('intended_route')
+      stopSessionMonitoring()
       loading.value = false
     }
   }
@@ -177,9 +209,11 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     try {
       await authApi.forgotPassword(email)
+      toast.success('Password reset link sent to your email')
       return true
     } catch (err) {
       error.value = handleError(err)
+      toast.error(error.value)
       throw new Error(error.value)
     } finally {
       loading.value = false
@@ -191,9 +225,11 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     try {
       await authApi.resetPassword(token, email, password, passwordConfirmation)
+      toast.success('Password reset successfully! Please login.')
       return true
     } catch (err) {
       error.value = handleError(err)
+      toast.error(error.value)
       throw new Error(error.value)
     } finally {
       loading.value = false
