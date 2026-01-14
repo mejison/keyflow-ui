@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 
@@ -56,7 +56,7 @@ export function useToast() {
   }
 
   return {
-    toasts: state.toasts,
+    toasts: computed(() => state.toasts),
     show,
     success,
     error,

@@ -27,7 +27,9 @@ const generateText = (wordCount: number, wordSet: '1k' | '5k' | '10k'): string =
   
   for (let i = 0; i < wordCount; i++) {
     const randomWord = words[Math.floor(Math.random() * words.length)]
-    result.push(randomWord)
+    if (randomWord) {
+      result.push(randomWord)
+    }
   }
   
   return result.join(' ')

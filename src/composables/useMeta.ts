@@ -39,7 +39,7 @@ export function useMeta(options: MetaOptions) {
 
   onMounted(() => {
     // Title
-    document.title = meta.title
+    document.title = meta.title === defaultOptions.title ? meta.title : `${meta.title} - KeyFlow`
 
     // Primary
     setMeta('title', meta.title)
@@ -51,14 +51,14 @@ export function useMeta(options: MetaOptions) {
     // Open Graph
     setMeta('og:type', meta.type, true)
     setMeta('og:url', meta.url, true)
-    setMeta('og:title', meta.title, true)
+    setMeta('og:title', meta.title === defaultOptions.title ? meta.title : `${meta.title} - KeyFlow`, true)
     setMeta('og:description', meta.description, true)
     setMeta('og:image', meta.image, true)
 
     // Twitter
     setMeta('twitter:card', 'summary_large_image', true)
     setMeta('twitter:url', meta.url, true)
-    setMeta('twitter:title', meta.title, true)
+    setMeta('twitter:title', meta.title === defaultOptions.title ? meta.title : `${meta.title} - KeyFlow`, true)
     setMeta('twitter:description', meta.description, true)
     setMeta('twitter:image', meta.image, true)
 

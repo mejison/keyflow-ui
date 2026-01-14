@@ -5,6 +5,7 @@ import { AxiosError } from 'axios'
 import { useToast } from '@/composables/useToast'
 import { stopSessionMonitoring, startSessionMonitoring } from '@/utils/session'
 import { analytics } from '@/utils/analytics'
+import { setUserContext, clearUserContext } from '@/utils/sentry'
 
 export interface User {
   id: string | number
@@ -42,7 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
       if (data?.errors) {
         // Laravel validation errors
         const firstError = Object.values(data.errors)[0]
-        return firstError ? firstError[0] : (data.message || 'An error occurred')
+        return firstError?.[0] || data.message || 'An error occurred'
       }
       return data?.message || err.message || 'An error occurred'
     }
@@ -66,6 +67,9 @@ export const useAuthStore = defineStore('auth', () => {
       
       // Analytics
       analytics.login('email')
+      
+      // Sentry user context
+      setUserContext(user.value)
       
       // Start session monitoring
       startSessionMonitoring()
@@ -97,6 +101,9 @@ export const useAuthStore = defineStore('auth', () => {
       
       // Analytics
       analytics.signup('email')
+      
+      // Sentry user context
+      setUserContext(user.value)
       
       // Start session monitoring
       startSessionMonitoring()
@@ -186,19 +193,23 @@ export const useAuthStore = defineStore('auth', () => {
 
   const logout = async () => {
     loading.value = true
-      
-      // Analytics
-      analytics.logout()
     error.value = null
     try {
       await authApi.logout()
       toast.info('Logged out successfully')
+      
+      // Analytics
+      analytics.logout()
     } catch (err) {
       console.error('Logout error:', err)
     } finally {
       user.value = null
       localStorage.removeItem('auth_token')
       sessionStorage.removeItem('intended_route')
+      
+      // Clear Sentry user context
+      clearUserContext()
+      
       stopSessionMonitoring()
       loading.value = false
     }

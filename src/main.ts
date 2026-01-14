@@ -8,12 +8,22 @@ import App from './App.vue'
 import { router } from './router'
 import { useLanguageStore } from './stores/language'
 import { useAuthStore } from './stores/auth'
+import { initSentry } from './utils/sentry'
 
 const app = createApp(App)
 const pinia = createPinia()
 
 app.use(pinia)
 app.use(router)
+
+// Initialize Sentry error monitoring
+initSentry(app, router)
+
+// Global error handler for uncaught errors
+app.config.errorHandler = (err, _instance, info) => {
+  console.error('Global error:', err, info)
+  // Sentry will automatically capture this
+}
 
 // Initialize word set from localStorage
 const languageStore = useLanguageStore()

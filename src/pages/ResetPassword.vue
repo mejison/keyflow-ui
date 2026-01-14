@@ -172,7 +172,7 @@ const handleSubmit = async () => {
       // Check for errors in data.data (Laravel validation structure)
       if (responseData.data && typeof responseData.data === 'object') {
         const errorMessages = Object.entries(responseData.data)
-          .map(([field, messages]) => {
+          .map(([_field, messages]) => {
             if (Array.isArray(messages)) {
               return messages.join(', ')
             }

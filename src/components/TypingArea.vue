@@ -111,7 +111,7 @@ const settingsStore = useSettingsStore()
 const typingAreaRef = ref<HTMLDivElement>()
 const lastKeyWasTab = ref(false)
 
-const fontSizeMap = {
+const fontSizeMap: Record<string, number> = {
   small: 20,
   medium: 24,
   large: 32

@@ -22,5 +22,4 @@
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import TypingArea from '@/components/TypingArea.vue'
-import SelectLanguage from '@/components/LanguageSelector.vue'
 </script>

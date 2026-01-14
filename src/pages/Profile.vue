@@ -104,7 +104,7 @@
                 </div>
                 <div>
                   <p class="text-slate-200 font-medium">Completed test</p>
-                  <p class="text-slate-500 text-sm">{{ formatDate(activity.created_at) }}</p>
+                  <p class="text-slate-500 text-sm">{{ formatDate(activity.completed_at) }}</p>
                 </div>
               </div>
               <div class="text-right">
@@ -158,8 +158,17 @@ const handleLogout = async () => {
 
 // Format date for display
 const formatDate = (dateString: string) => {
+  if (!dateString) return 'Unknown'
+  
   const date = new Date(dateString)
   const now = new Date()
+  
+  // Check if date is valid
+  if (isNaN(date.getTime())) {
+    console.warn('Invalid date:', dateString)
+    return 'Unknown'
+  }
+  
   const diff = now.getTime() - date.getTime()
   
   const seconds = Math.floor(diff / 1000)
@@ -167,9 +176,13 @@ const formatDate = (dateString: string) => {
   const hours = Math.floor(minutes / 60)
   const days = Math.floor(hours / 24)
   
+  if (days > 7) {
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }
   if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`
   if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`
   if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+  if (seconds > 30) return `${seconds} seconds ago`
   return 'Just now'
 }
 
@@ -200,8 +213,8 @@ onMounted(async () => {
     console.log('Stats Response:', statsResponse)
     console.log('Activity Response:', activityResponse)
     
-    statistics.value = statsResponse.data
-    recentActivity.value = activityResponse.data
+    statistics.value = statsResponse.data.data || statsResponse.data
+    recentActivity.value = activityResponse.data.data || activityResponse.data
   } catch (err: any) {
     console.error('Failed to load statistics:', err)
     error.value = 'Failed to load statistics'

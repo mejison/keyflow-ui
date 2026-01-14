@@ -39,8 +39,8 @@ export const useSettingsStore = defineStore('settings', () => {
 
   // Convert local format to API format
   const localToApi = (localSettings: Settings) => {
-    // Map font size string to number
-    const fontSizeMap = {
+    // Map font size string to number for API
+    const fontSizeMap: Record<string, number> = {
       'small': 14,
       'medium': 16,
       'large': 20
@@ -49,7 +49,7 @@ export const useSettingsStore = defineStore('settings', () => {
     return {
       test_duration: localSettings.testDuration,
       sound_enabled: localSettings.soundEnabled,
-      font_size: fontSizeMap[localSettings.fontSize],
+      font_size: fontSizeMap[localSettings.fontSize] || 16,
     }
   }
 
@@ -74,7 +74,7 @@ export const useSettingsStore = defineStore('settings', () => {
         console.log('API Settings Response:', response)
         
         // API returns data.settings, not just data
-        const apiData = response.data.settings || response.data
+        const apiData = (response.data as any)?.settings || response.data
         const apiSettings = apiToLocal(apiData)
         
         console.log('Converted Settings:', apiSettings)
@@ -119,7 +119,7 @@ export const useSettingsStore = defineStore('settings', () => {
       try {
         loading.value = true
         const response = await settingsApi.resetSettings()
-        const apiData = response.data.settings || response.data
+        const apiData = (response.data as any)?.settings || response.data
         const apiSettings = apiToLocal(apiData)
         settings.value = apiSettings
         localStorage.setItem('keyflow_settings', JSON.stringify(apiSettings))

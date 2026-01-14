@@ -34,7 +34,7 @@
         <button
           v-for="p in periods"
           :key="p.value"
-          @click="period = p.value"
+          @click="period = p.value as typeof period"
           :class="[
             'px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap',
             period === p.value
@@ -51,7 +51,7 @@
         <button
           v-for="tab in tabs"
           :key="tab.value"
-          @click="activeTab = tab.value"
+          @click="activeTab = tab.value as typeof activeTab"
           :class="[
             'px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap',
             activeTab === tab.value
@@ -98,16 +98,16 @@
             <tbody>
               <tr
                 v-for="entry in entries"
-                :key="entry.user.id"
+                :key="entry.user?.id || entry.rank"
                 :class="[
                   'border-t border-slate-700/30 hover:bg-slate-700/20 transition-colors',
-                  entry.user.id === authStore.user?.id ? 'bg-blue-500/5' : ''
+                  entry.user?.id === authStore.user?.id ? 'bg-blue-500/5' : ''
                 ]"
               >
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-2">
                     <span
-                      v-if="entry.rank <= 3"
+                      v-if="entry.rank && entry.rank <= 3"
                       class="text-2xl"
                     >
                       {{ entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : '🥉' }}
@@ -115,39 +115,39 @@
                     <span
                       :class="[
                         'font-bold',
-                        entry.rank <= 3 ? 'text-yellow-400' : 'text-slate-400'
+                        entry.rank && entry.rank <= 3 ? 'text-yellow-400' : 'text-slate-400'
                       ]"
                     >
-                      #{{ entry.rank }}
+                      #{{ entry.rank || '?' }}
                     </span>
                   </div>
                 </td>
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-sm font-bold text-white">
-                      {{ (entry.user.name || 'U').substring(0, 2).toUpperCase() }}
+                      {{ (entry.user?.name || 'U').substring(0, 2).toUpperCase() }}
                     </div>
                     <div>
                       <div class="font-medium text-slate-200">
-                        {{ entry.user.name || 'Unknown' }}
-                        <span v-if="entry.user.id === authStore.user?.id" class="text-xs text-blue-400 ml-2">(You)</span>
+                        {{ entry.user?.name || 'Unknown' }}
+                        <span v-if="entry.user?.id === authStore.user?.id" class="text-xs text-blue-400 ml-2">(You)</span>
                       </div>
                     </div>
                   </div>
                 </td>
                 <td v-if="activeTab === 'wpm'" class="px-6 py-4 text-right">
-                  <span class="text-lg font-bold text-blue-400">{{ entry.best_wpm }}</span>
+                  <span class="text-lg font-bold text-blue-400">{{ entry.best_wpm || 0 }}</span>
                   <span class="text-sm text-slate-500 ml-1">WPM</span>
                 </td>
                 <td v-if="activeTab === 'accuracy'" class="px-6 py-4 text-right">
-                  <span class="text-lg font-bold text-emerald-400">{{ Number(entry.avg_accuracy).toFixed(1) }}%</span>
+                  <span class="text-lg font-bold text-emerald-400">{{ Number(entry.avg_accuracy || 0).toFixed(1) }}%</span>
                 </td>
                 <td v-if="activeTab === 'tests'" class="px-6 py-4 text-right">
                   <span class="text-lg font-bold text-purple-400">{{ entry.total_tests }}</span>
                   <span class="text-sm text-slate-500 ml-1">tests</span>
                 </td>
                 <td v-if="activeTab === 'combined'" class="px-6 py-4 text-right">
-                  <span class="text-lg font-bold text-yellow-400">{{ Number(entry.score).toFixed(0) }}</span>
+                  <span class="text-lg font-bold text-yellow-400">{{ getScore(entry) }}</span>
                 </td>
               </tr>
             </tbody>
@@ -210,12 +210,31 @@ const loadLeaderboard = async () => {
         break
     }
     
-    entries.value = response.data.leaderboard || []
+    console.log('Leaderboard API response:', response)
+    console.log('Leaderboard data:', response.data)
+    entries.value = response.data.data?.leaderboard || response.data.leaderboard || []
   } catch (err: any) {
     console.error('Failed to load leaderboard:', err)
     error.value = 'Failed to load leaderboard'
   } finally {
     loading.value = false
+  }
+}
+
+const getScore = (entry: LeaderboardEntry): string => {
+  switch (activeTab.value) {
+    case 'wpm':
+      return (entry.best_wpm || 0).toFixed(0)
+    case 'accuracy':
+      return (entry.avg_accuracy || 0).toFixed(1) + '%'
+    case 'tests':
+      return (entry.total_tests || 0).toString()
+    case 'combined':
+      // Calculate combined score: (best_wpm * accuracy/100)
+      const score = entry.combined_score || ((entry.best_wpm || 0) * (entry.avg_accuracy || 0) / 100)
+      return score.toFixed(0)
+    default:
+      return '0'
   }
 }
 

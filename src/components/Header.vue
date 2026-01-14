@@ -56,6 +56,6 @@ const authStore = useAuthStore()
 
 const userInitials = computed(() => {
   const name = authStore.user?.name || 'U'
-  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+  return name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
 })
 </script>
