@@ -1,9 +1,14 @@
 <template>
   <DefaultLayout>
-    <div class="container mx-auto max-w-4xl px-4">
+    <div class="container mx-auto max-w-5xl px-4">
       <div class="mb-8">
         <h1 class="text-4xl font-bold text-slate-50 mb-2">⚙️ Settings</h1>
-        <p class="text-slate-400">Customize your typing experience</p>
+        <p class="text-slate-400">
+          Customize your typing experience
+          <span v-if="!authStore.isAuthenticated" class="text-slate-500 text-sm ml-2">
+            (💾 Saved locally)
+          </span>
+        </p>
       </div>
 
       <div class="space-y-6">
@@ -19,7 +24,7 @@
               :class="[
                 'px-6 py-4 rounded-xl font-medium transition-all',
                 settingsStore.settings.testDuration === duration
-                  ? 'bg-blue-600 text-white ring-2 ring-blue-400'
+                  ? 'bg-primary text-white ring-2 ring-primary'
                   : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
               ]"
             >
@@ -44,7 +49,7 @@
               :class="[
                 'px-6 py-4 rounded-xl font-medium transition-all',
                 settingsStore.settings.fontSize === size.value
-                  ? 'bg-blue-600 text-white ring-2 ring-blue-400'
+                  ? 'bg-primary text-white ring-2 ring-primary'
                   : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
               ]"
             >
@@ -67,7 +72,7 @@
               @click="settingsStore.updateSetting('soundEnabled', !settingsStore.settings.soundEnabled)"
               :class="[
                 'relative w-14 h-8 rounded-full transition-colors',
-                settingsStore.settings.soundEnabled ? 'bg-blue-600' : 'bg-slate-600'
+                settingsStore.settings.soundEnabled ? 'bg-primary' : 'bg-slate-600'
               ]"
             >
               <div
@@ -132,12 +137,20 @@ import { RouterLink } from 'vue-router'
 import { useSettingsStore } from '@/stores/settings'
 import { useAuthStore } from '@/stores/auth'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import { useMeta } from '@/composables/useMeta'
 
 const settingsStore = useSettingsStore()
 const authStore = useAuthStore()
+const { setMeta } = useMeta()
 
 // Reload settings when page is mounted
 onMounted(async () => {
+  setMeta({
+    title: 'Settings - KeyFlow',
+    description: 'Customize your KeyFlow typing experience. Adjust test duration, font size, and sound preferences.',
+    keywords: 'typing settings, typing preferences, customize typing test'
+  })
+  
   const token = localStorage.getItem('auth_token')
   if (token) {
     await settingsStore.loadSettings()

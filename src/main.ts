@@ -8,6 +8,7 @@ import App from './App.vue'
 import { router } from './router'
 import { useLanguageStore } from './stores/language'
 import { useAuthStore } from './stores/auth'
+import { useThemeStore } from './stores/theme'
 import { initSentry } from './utils/sentry'
 
 const app = createApp(App)
@@ -28,6 +29,9 @@ app.config.errorHandler = (err, _instance, info) => {
 // Initialize word set from localStorage
 const languageStore = useLanguageStore()
 languageStore.initWordSet()
+
+// Initialize theme from localStorage
+const themeStore = useThemeStore()
 
 // Initialize auth - restore user session if token exists
 const authStore = useAuthStore()

@@ -71,13 +71,11 @@ export const useSettingsStore = defineStore('settings', () => {
       try {
         loading.value = true
         const response = await settingsApi.getSettings()
-        console.log('API Settings Response:', response)
         
         // API returns data.settings, not just data
         const apiData = (response.data as any)?.settings || response.data
         const apiSettings = apiToLocal(apiData)
         
-        console.log('Converted Settings:', apiSettings)
         settings.value = apiSettings
         // Save to localStorage as backup
         localStorage.setItem('keyflow_settings', JSON.stringify(apiSettings))
@@ -139,6 +137,12 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
+  // Reset to defaults without API call (for logout)
+  const resetToDefaults = () => {
+    settings.value = { ...DEFAULT_SETTINGS }
+    localStorage.removeItem('keyflow_settings')
+  }
+
   // Initialize
   loadSettings()
 
@@ -148,6 +152,7 @@ export const useSettingsStore = defineStore('settings', () => {
     updateSetting,
     resetSettings,
     loadSettings,
+    resetToDefaults,
   }
 })
 

@@ -8,7 +8,6 @@ export const initSentry = (app: App, router: Router) => {
   
   // Only initialize in production or if DSN is explicitly provided
   if (!dsn) {
-    console.log('Sentry disabled: No DSN provided')
     return
   }
 

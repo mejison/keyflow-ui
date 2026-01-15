@@ -18,8 +18,8 @@
           <!-- Content -->
           <div class="p-6">
             <p class="text-slate-300 mb-6 leading-relaxed">
-              Feel free to send an email to <a href="mailto:contact@keyflow.app" class="text-blue-400 hover:text-blue-300">contact@keyflow.app</a>. 
-              For business inquiries, email <a href="mailto:business@keyflow.app" class="text-blue-400 hover:text-blue-300">business@keyflow.app</a> 
+              Feel free to send an email to <a href="mailto:contact@keyflow.app" class="text-primary hover:text-primary">contact@keyflow.app</a>. 
+              For business inquiries, email <a href="mailto:business@keyflow.app" class="text-primary hover:text-primary">business@keyflow.app</a> 
               (the buttons below will open the default mail client).
             </p>
 
@@ -34,8 +34,8 @@
                 href="mailto:contact@keyflow.app?subject=Question"
                 class="flex items-center gap-3 p-4 bg-slate-900/50 hover:bg-slate-900/70 rounded-xl border border-slate-700 transition-all group"
               >
-                <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
-                  <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
@@ -46,8 +46,8 @@
                 href="mailto:contact@keyflow.app?subject=Feedback"
                 class="flex items-center gap-3 p-4 bg-slate-900/50 hover:bg-slate-900/70 rounded-xl border border-slate-700 transition-all group"
               >
-                <div class="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
-                  <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center group-hover:bg-secondary/20 transition-colors">
+                  <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>

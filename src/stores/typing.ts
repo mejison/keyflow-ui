@@ -28,7 +28,31 @@ const generateText = (wordCount: number, wordSet: '1k' | '5k' | '10k'): string =
   for (let i = 0; i < wordCount; i++) {
     const randomWord = words[Math.floor(Math.random() * words.length)]
     if (randomWord) {
-      result.push(randomWord)
+      let word = randomWord
+      
+      // Додаємо розділові знаки
+      const rand = Math.random()
+      
+      // Кома ~15% випадків (але не в кінці)
+      if (rand < 0.15 && i < wordCount - 1 && i > 0) {
+        word += ','
+      }
+      // Крапка ~10% випадків (створює "речення")
+      else if (rand >= 0.15 && rand < 0.25 && i < wordCount - 1 && i > 2) {
+        word += '.'
+        // Наступне слово з великої літери
+        if (i + 1 < wordCount) {
+          const nextWord = words[Math.floor(Math.random() * words.length)]
+          if (nextWord) {
+            result.push(word)
+            result.push(nextWord.charAt(0).toUpperCase() + nextWord.slice(1))
+            i++
+            continue
+          }
+        }
+      }
+      
+      result.push(word)
     }
   }
   

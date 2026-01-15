@@ -6,6 +6,7 @@ import { useToast } from '@/composables/useToast'
 import { stopSessionMonitoring, startSessionMonitoring } from '@/utils/session'
 import { analytics } from '@/utils/analytics'
 import { setUserContext, clearUserContext } from '@/utils/sentry'
+import { useSettingsStore } from '@/stores/settings'
 
 export interface User {
   id: string | number
@@ -206,6 +207,10 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = null
       localStorage.removeItem('auth_token')
       sessionStorage.removeItem('intended_route')
+      
+      // Reset settings to defaults
+      const settingsStore = useSettingsStore()
+      settingsStore.resetToDefaults()
       
       // Clear Sentry user context
       clearUserContext()

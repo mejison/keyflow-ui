@@ -1,17 +1,27 @@
 <template>
   <DefaultLayout>
-    <div class="container mx-auto max-w-6xl px-4">
+    <div class="container mx-auto max-w-5xl px-4">
       <div class="mb-8">
         <h1 class="text-4xl font-bold text-slate-50 mb-2">🏆 Leaderboard</h1>
         <p class="text-slate-400">Compete with typists around the world</p>
       </div>
 
       <!-- My Rank Card (if authenticated) -->
-      <div v-if="authStore.isAuthenticated && myRank" class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl border border-blue-500/20 p-6 mb-8">
+      <div v-if="authStore.isAuthenticated" class="rounded-2xl border border-primary/20 p-6 mb-8" style="background-image: linear-gradient(to right, var(--color-primary-rgb, 59, 130, 246) / 0.1, var(--color-secondary-rgb, 147, 51, 234) / 0.1)">
         <h2 class="text-lg font-bold text-slate-50 mb-4">Your Rankings</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        
+        <!-- Loading skeleton -->
+        <div v-if="loading && !myRank" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div v-for="i in 4" :key="i" class="text-center">
+            <div class="h-8 w-16 bg-slate-700/50 rounded-lg animate-pulse mx-auto mb-2"></div>
+            <div class="h-4 w-20 bg-slate-700/30 rounded mx-auto"></div>
+          </div>
+        </div>
+        
+        <!-- Actual rankings -->
+        <div v-else-if="myRank" class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="text-center">
-            <div class="text-2xl font-bold text-blue-400">{{ myRank.ranks.wpm || '-' }}</div>
+            <div class="text-2xl font-bold text-primary">{{ myRank.ranks.wpm || '-' }}</div>
             <div class="text-sm text-slate-400">WPM Rank</div>
           </div>
           <div class="text-center">
@@ -27,6 +37,11 @@
             <div class="text-sm text-slate-400">Combined Rank</div>
           </div>
         </div>
+        
+        <!-- Empty state -->
+        <div v-else class="text-center py-4 text-slate-400">
+          Complete your first test to see your rankings
+        </div>
       </div>
 
       <!-- Period Filter -->
@@ -38,7 +53,7 @@
           :class="[
             'px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap',
             period === p.value
-              ? 'bg-blue-600 text-white'
+              ? 'bg-primary text-white'
               : 'bg-slate-800/40 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
           ]"
         >
@@ -66,7 +81,7 @@
       <!-- Leaderboard Table -->
       <div class="bg-slate-800/40 backdrop-blur-md rounded-2xl border border-slate-700/30 overflow-hidden">
         <div v-if="loading" class="p-8 text-center">
-          <div class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
           <p class="text-slate-400">Loading leaderboard...</p>
         </div>
 
@@ -78,7 +93,7 @@
           <div class="text-6xl mb-4">🏆</div>
           <h3 class="text-xl font-semibold text-slate-300 mb-2">No entries yet</h3>
           <p class="text-slate-400 mb-6">Be the first to complete a test and claim your spot!</p>
-          <button @click="$router.push('/')" class="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-white font-medium transition-all">
+          <button @click="$router.push('/')" class="px-6 py-2 bg-primary hover:bg-primary rounded-xl text-white font-medium transition-all">
             Start Typing Test
           </button>
         </div>
@@ -101,7 +116,7 @@
                 :key="entry.user?.id || entry.rank"
                 :class="[
                   'border-t border-slate-700/30 hover:bg-slate-700/20 transition-colors',
-                  entry.user?.id === authStore.user?.id ? 'bg-blue-500/5' : ''
+                  entry.user?.id === authStore.user?.id ? 'bg-primary/10' : ''
                 ]"
               >
                 <td class="px-6 py-4">
@@ -124,19 +139,19 @@
                 </td>
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-sm font-bold text-white">
+                    <div style="background-image: linear-gradient(135deg, var(--color-primary), var(--color-secondary))" class="w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold text-white">
                       {{ (entry.user?.name || 'U').substring(0, 2).toUpperCase() }}
                     </div>
                     <div>
                       <div class="font-medium text-slate-200">
                         {{ entry.user?.name || 'Unknown' }}
-                        <span v-if="entry.user?.id === authStore.user?.id" class="text-xs text-blue-400 ml-2">(You)</span>
+                        <span v-if="entry.user?.id === authStore.user?.id" class="text-xs text-primary ml-2">(You)</span>
                       </div>
                     </div>
                   </div>
                 </td>
                 <td v-if="activeTab === 'wpm'" class="px-6 py-4 text-right">
-                  <span class="text-lg font-bold text-blue-400">{{ entry.best_wpm || 0 }}</span>
+                  <span class="text-lg font-bold text-primary">{{ entry.best_wpm || 0 }}</span>
                   <span class="text-sm text-slate-500 ml-1">WPM</span>
                 </td>
                 <td v-if="activeTab === 'accuracy'" class="px-6 py-4 text-right">
@@ -164,6 +179,17 @@ import { useAuthStore } from '@/stores/auth'
 import { leaderboardApi } from '@/services/api'
 import type { LeaderboardEntry, UserRank } from '@/services/api'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import { useMeta } from '@/composables/useMeta'
+
+const { setMeta } = useMeta()
+
+onMounted(() => {
+  setMeta({
+    title: 'Leaderboard - KeyFlow',
+    description: 'Compete with typists around the world. View top rankings by WPM, accuracy, and activity. Join the KeyFlow typing competition today!',
+    keywords: 'typing leaderboard, typing competition, typing rankings, fastest typist, typing game rankings'
+  })
+})
 
 const authStore = useAuthStore()
 
@@ -210,9 +236,33 @@ const loadLeaderboard = async () => {
         break
     }
     
-    console.log('Leaderboard API response:', response)
-    console.log('Leaderboard data:', response.data)
-    entries.value = response.data.data?.leaderboard || response.data.leaderboard || []
+    let leaderboardData = response.data.data?.leaderboard || response.data.leaderboard || []
+    
+    // Sort entries based on the active tab
+    leaderboardData = leaderboardData.sort((a: LeaderboardEntry, b: LeaderboardEntry) => {
+      switch (activeTab.value) {
+        case 'wpm':
+          return (b.best_wpm || 0) - (a.best_wpm || 0)
+        case 'accuracy':
+          return (b.avg_accuracy || 0) - (a.avg_accuracy || 0)
+        case 'tests':
+          return (b.total_tests || 0) - (a.total_tests || 0)
+        case 'combined':
+          const scoreA = a.combined_score || ((a.best_wpm || 0) * (a.avg_accuracy || 0) / 100)
+          const scoreB = b.combined_score || ((b.best_wpm || 0) * (b.avg_accuracy || 0) / 100)
+          return scoreB - scoreA
+        default:
+          return 0
+      }
+    })
+    
+    // Re-assign ranks to ensure correct order
+    leaderboardData = leaderboardData.map((entry: LeaderboardEntry, index: number) => ({
+      ...entry,
+      rank: index + 1
+    }))
+    
+    entries.value = leaderboardData
   } catch (err: any) {
     console.error('Failed to load leaderboard:', err)
     error.value = 'Failed to load leaderboard'
@@ -245,7 +295,6 @@ const loadMyRank = async () => {
   try {
     const response = await leaderboardApi.getMyRank(period.value)
     myRank.value = response.data
-    console.log('My Rank loaded:', myRank.value)
   } catch (err: any) {
     console.error('Failed to load rank:', err)
   }

@@ -20,7 +20,8 @@
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
           <RouterLink
             to="/"
-            class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-xl font-semibold text-white transition-all shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30"
+            style="background-image: linear-gradient(to right, var(--color-primary), var(--color-secondary))"
+            class="px-6 py-3 rounded-xl font-semibold text-white transition-all shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
           >
             Go Home
           </RouterLink>
@@ -36,13 +37,13 @@
         <div class="mt-8 pt-8 border-t border-slate-700/30">
           <p class="text-sm text-slate-500 mb-3">Maybe you're looking for:</p>
           <div class="flex flex-wrap gap-3 justify-center text-sm">
-            <RouterLink to="/" class="text-blue-400 hover:text-blue-300 transition-colors">Home</RouterLink>
+            <RouterLink to="/" class="text-primary hover:text-primary transition-colors">Home</RouterLink>
             <span class="text-slate-600">•</span>
-            <RouterLink to="/leaderboard" class="text-blue-400 hover:text-blue-300 transition-colors">Leaderboard</RouterLink>
+            <RouterLink to="/leaderboard" class="text-primary hover:text-primary transition-colors">Leaderboard</RouterLink>
             <span class="text-slate-600">•</span>
-            <RouterLink to="/profile" class="text-blue-400 hover:text-blue-300 transition-colors">Profile</RouterLink>
+            <RouterLink to="/profile" class="text-primary hover:text-primary transition-colors">Profile</RouterLink>
             <span class="text-slate-600">•</span>
-            <RouterLink to="/settings" class="text-blue-400 hover:text-blue-300 transition-colors">Settings</RouterLink>
+            <RouterLink to="/settings" class="text-primary hover:text-primary transition-colors">Settings</RouterLink>
           </div>
         </div>
       </div>

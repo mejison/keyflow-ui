@@ -130,13 +130,13 @@
             <h2 class="text-2xl font-bold text-slate-50 mb-4">11. Contact Us</h2>
             <p class="leading-relaxed">
               If you have any questions about this Privacy Policy, please contact us at:
-              <a href="mailto:privacy@keyflow.app" class="text-blue-400 hover:text-blue-300 ml-1">privacy@keyflow.app</a>
+              <a href="mailto:privacy@keyflow.app" class="text-primary hover:text-primary ml-1">privacy@keyflow.app</a>
             </p>
           </section>
         </div>
 
         <div class="mt-12 pt-6 border-t border-slate-700">
-          <RouterLink to="/" class="text-blue-400 hover:text-blue-300 inline-flex items-center gap-2">
+          <RouterLink to="/" class="text-primary hover:text-primary inline-flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>

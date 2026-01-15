@@ -142,7 +142,7 @@
               If you discover a security vulnerability in KeyFlow, we encourage responsible disclosure:
             </p>
             <ul class="list-disc list-inside space-y-2 ml-4">
-              <li>Email us at <a href="mailto:security@keyflow.app" class="text-blue-400 hover:text-blue-300">security@keyflow.app</a></li>
+              <li>Email us at <a href="mailto:security@keyflow.app" class="text-primary hover:text-primary">security@keyflow.app</a></li>
               <li>Provide detailed information about the vulnerability</li>
               <li>Allow us reasonable time to address the issue before public disclosure</li>
               <li>We commit to acknowledging reports within 48 hours</li>
@@ -175,13 +175,13 @@
             <h2 class="text-2xl font-bold text-slate-50 mb-4">15. Contact Information</h2>
             <p class="leading-relaxed">
               For security concerns or questions, contact our security team at:
-              <a href="mailto:security@keyflow.app" class="text-blue-400 hover:text-blue-300 ml-1">security@keyflow.app</a>
+              <a href="mailto:security@keyflow.app" class="text-primary hover:text-primary ml-1">security@keyflow.app</a>
             </p>
           </section>
         </div>
 
         <div class="mt-12 pt-6 border-t border-slate-700">
-          <RouterLink to="/" class="text-blue-400 hover:text-blue-300 inline-flex items-center gap-2">
+          <RouterLink to="/" class="text-primary hover:text-primary inline-flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>

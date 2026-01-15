@@ -1,17 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '@/pages/Home.vue'
-import LoginPage from '@/pages/Login.vue'
-import SignupPage from '@/pages/Signup.vue'
-import ForgotPasswordPage from '@/pages/ForgotPassword.vue'
-import ResetPasswordPage from '@/pages/ResetPassword.vue'
-import AuthCallback from '@/pages/AuthCallback.vue'
-import ProfilePage from '@/pages/Profile.vue'
-import LeaderboardPage from '@/pages/Leaderboard.vue'
-import SettingsPage from '@/pages/Settings.vue'
-import PrivacyPolicyPage from '@/pages/PrivacyPolicy.vue'
-import SecurityPolicyPage from '@/pages/SecurityPolicy.vue'
-import TermsOfServicePage from '@/pages/TermsOfService.vue'
-import NotFoundPage from '@/pages/NotFound.vue'
+
+// Lazy load components for better performance
+const HomePage = () => import('@/pages/Home.vue')
+const LoginPage = () => import('@/pages/Login.vue')
+const SignupPage = () => import('@/pages/Signup.vue')
+const ForgotPasswordPage = () => import('@/pages/ForgotPassword.vue')
+const ResetPasswordPage = () => import('@/pages/ResetPassword.vue')
+const AuthCallback = () => import('@/pages/AuthCallback.vue')
+const ProfilePage = () => import('@/pages/Profile.vue')
+const LeaderboardPage = () => import('@/pages/Leaderboard.vue')
+const SettingsPage = () => import('@/pages/Settings.vue')
+const PrivacyPolicyPage = () => import('@/pages/PrivacyPolicy.vue')
+const SecurityPolicyPage = () => import('@/pages/SecurityPolicy.vue')
+const TermsOfServicePage = () => import('@/pages/TermsOfService.vue')
+const NotFoundPage = () => import('@/pages/NotFound.vue')
 
 const routes = [
   { path: '/', component: HomePage },
@@ -22,7 +24,7 @@ const routes = [
   { path: '/auth/callback/:provider', component: AuthCallback },
   { path: '/profile', component: ProfilePage, meta: { requiresAuth: true } },
   { path: '/leaderboard', component: LeaderboardPage },
-  { path: '/settings', component: SettingsPage, meta: { requiresAuth: true } },
+  { path: '/settings', component: SettingsPage },
   { path: '/privacy-policy', component: PrivacyPolicyPage },
   { path: '/security-policy', component: SecurityPolicyPage },
   { path: '/terms-of-service', component: TermsOfServicePage },

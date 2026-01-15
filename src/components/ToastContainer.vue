@@ -57,7 +57,7 @@ const toastClasses = (type: ToastType) => {
       return 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
     case 'info':
     default:
-      return 'bg-blue-500/10 border-blue-500/30 text-blue-400'
+      return 'bg-primary/10 border-primary/30 text-primary'
   }
 }
 </script>

@@ -1,7 +1,11 @@
 import axios, { AxiosError } from 'axios'
 import { useToast } from '@/composables/useToast'
+import { RateLimiter } from '@/utils/rateLimiter'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+
+// Create rate limiter instance (max 1 request per second)
+const rateLimiter = new RateLimiter(1000, 20)
 
 // Create axios instance
 export const api = axios.create({
@@ -280,7 +284,7 @@ export const authApi = {
   },
 }
 
-// Typing Tests API methods
+// Typing Tests API methods with rate limiting
 export const typingTestsApi = {
   // Save typing test result
   saveTest: async (data: {
@@ -292,8 +296,10 @@ export const typingTestsApi = {
     total_words: number
     text_content?: string
   }) => {
-    const response = await api.post<ApiResponse<TypingTest>>('/api/v1/typing-tests', data)
-    return response.data
+    return rateLimiter.execute(async () => {
+      const response = await api.post<ApiResponse<TypingTest>>('/api/v1/typing-tests', data)
+      return response.data
+    })
   },
 
   // Get statistics

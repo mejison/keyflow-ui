@@ -1,14 +1,16 @@
 <template>
   <header class="border-b border-slate-700/50 backdrop-blur-sm bg-slate-900/50 sticky top-0 z-40">
     <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
-      <RouterLink to="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-        <Logo :size="40" />
-        <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+      <RouterLink to="/" class="hover:opacity-80 transition-opacity">
+        <h1 
+          class="text-3xl font-bold bg-clip-text text-transparent"
+          style="background-image: linear-gradient(to right, var(--color-primary), var(--color-secondary))"
+        >
           Keyflow
         </h1>
       </RouterLink>
       
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-4">
         <RouterLink 
           to="/leaderboard" 
           class="text-slate-400 hover:text-slate-200 transition-colors text-sm font-medium"
@@ -16,13 +18,11 @@
           🏆 Leaderboard
         </RouterLink>
         <RouterLink 
-          v-if="authStore.isAuthenticated"
           to="/settings" 
           class="text-slate-400 hover:text-slate-200 transition-colors text-sm font-medium"
         >
           ⚙️ Settings
         </RouterLink>
-        <LanguageSelector />
         <RouterLink 
           v-if="!authStore.isAuthenticated"
           to="/login" 
@@ -35,7 +35,10 @@
           to="/profile" 
           class="flex items-center gap-2 text-slate-400 hover:text-slate-200 transition-colors text-sm font-medium"
         >
-          <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-xs font-bold text-white">
+          <div 
+            class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white"
+            style="background-image: linear-gradient(to bottom right, var(--color-primary), var(--color-secondary))"
+          >
             {{ userInitials }}
           </div>
           Profile
@@ -49,8 +52,6 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import LanguageSelector from '@/components/LanguageSelector.vue'
-import Logo from '@/components/Logo.vue'
 
 const authStore = useAuthStore()
 

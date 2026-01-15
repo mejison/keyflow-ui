@@ -1,6 +1,6 @@
 <template>
   <DefaultLayout>
-    <div class="container mx-auto max-w-md px-4">
+    <div class="container mx-auto max-w-lg px-4">
       <div class="bg-slate-800/40 backdrop-blur-md rounded-3xl shadow-2xl border border-slate-700/30 p-10">
         <div class="text-center mb-8">
           <h2 class="text-3xl font-bold text-slate-50 mb-2">Reset Password</h2>
@@ -23,7 +23,7 @@
               type="email"
               required
               :disabled="isLoading"
-              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               placeholder="your@email.com"
             />
           </div>
@@ -31,7 +31,8 @@
           <button
             type="submit"
             :disabled="isLoading"
-            class="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-xl font-semibold text-white transition-all shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+            style="background-image: linear-gradient(to right, var(--color-primary), var(--color-secondary))"
+            class="w-full py-3 rounded-xl font-semibold text-white transition-all shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="!isLoading">Send Reset Link</span>
             <span v-else class="flex items-center justify-center gap-2">
@@ -57,7 +58,7 @@
           </p>
           <p class="text-slate-500 text-sm">
             Didn't receive the email? Check your spam folder or
-            <button @click="submitted = false" class="text-blue-400 hover:text-blue-300">try again</button>
+            <button @click="submitted = false" class="text-primary hover:text-primary">try again</button>
           </p>
         </div>
 

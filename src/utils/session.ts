@@ -24,7 +24,6 @@ export const startSessionMonitoring = () => {
         await authStore.fetchUser()
       } catch (error) {
         // Session invalid - will be handled by axios interceptor
-        console.log('Session validation failed')
       }
     } else {
       // No token, stop monitoring

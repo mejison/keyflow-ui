@@ -12,7 +12,8 @@ describe('useMeta', () => {
   it('should set page title', () => {
     const wrapper = mount({
       setup() {
-        useMeta({
+        const { setMeta } = useMeta()
+        setMeta({
           title: 'Test Page'
         })
       },
@@ -25,7 +26,8 @@ describe('useMeta', () => {
   it('should set meta description', () => {
     const wrapper = mount({
       setup() {
-        useMeta({
+        const { setMeta } = useMeta()
+        setMeta({
           title: 'Test',
           description: 'Test description'
         })
@@ -40,7 +42,8 @@ describe('useMeta', () => {
   it('should set Open Graph tags', () => {
     const wrapper = mount({
       setup() {
-        useMeta({
+        const { setMeta } = useMeta()
+        setMeta({
           title: 'OG Test',
           description: 'OG description',
           image: 'https://example.com/image.jpg'
@@ -61,7 +64,8 @@ describe('useMeta', () => {
   it('should set Twitter Card tags', () => {
     const wrapper = mount({
       setup() {
-        useMeta({
+        const { setMeta } = useMeta()
+        setMeta({
           title: 'Twitter Test',
           description: 'Twitter description'
         })
@@ -81,7 +85,8 @@ describe('useMeta', () => {
     
     const wrapper = mount({
       setup() {
-        useMeta({
+        const { setMeta } = useMeta()
+        setMeta({
           title: 'Temporary Title'
         })
       },
