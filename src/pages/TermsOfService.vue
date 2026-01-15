@@ -220,7 +220,7 @@
             <h2 class="text-2xl font-bold text-slate-50 mb-4">18. Contact Information</h2>
             <p class="leading-relaxed">
               If you have questions about these Terms of Service, please contact us at:
-              <a href="mailto:legal@keyflow.app" class="text-primary hover:text-primary ml-1">legal@keyflow.app</a>
+              <a href="mailto:legal@keyflow.click" class="text-primary hover:text-primary ml-1">legal@keyflow.click</a>
             </p>
           </section>
         </div>

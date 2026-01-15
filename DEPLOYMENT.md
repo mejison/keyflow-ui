@@ -8,7 +8,7 @@ Create `.env.production` file with:
 
 ```bash
 # Backend API URL - YOUR PRODUCTION DOMAIN
-VITE_API_BASE_URL=https://api.keyflow.app
+VITE_API_BASE_URL=https://api.keyflow.click
 
 # Google Analytics 4
 VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
@@ -71,7 +71,7 @@ Environment variables in Netlify Dashboard.
 ```nginx
 server {
     listen 80;
-    server_name keyflow.app;
+    server_name keyflow.click;
     
     # Redirect to HTTPS
     return 301 https://$server_name$request_uri;
@@ -79,7 +79,7 @@ server {
 
 server {
     listen 443 ssl http2;
-    server_name keyflow.app;
+    server_name keyflow.click;
     
     # SSL Certificate
     ssl_certificate /path/to/cert.pem;
@@ -118,7 +118,7 @@ server {
 
 ```bash
 sudo apt-get install certbot python3-certbot-nginx
-sudo certbot --nginx -d keyflow.app -d www.keyflow.app
+sudo certbot --nginx -d keyflow.click -d www.keyflow.click
 ```
 
 Auto-renewal is configured automatically.

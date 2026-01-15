@@ -130,7 +130,7 @@
             <h2 class="text-2xl font-bold text-slate-50 mb-4">11. Contact Us</h2>
             <p class="leading-relaxed">
               If you have any questions about this Privacy Policy, please contact us at:
-              <a href="mailto:privacy@keyflow.app" class="text-primary hover:text-primary ml-1">privacy@keyflow.app</a>
+              <a href="mailto:privacy@keyflow.click" class="text-primary hover:text-primary ml-1">privacy@keyflow.click</a>
             </p>
           </section>
         </div>

@@ -142,7 +142,7 @@
               If you discover a security vulnerability in KeyFlow, we encourage responsible disclosure:
             </p>
             <ul class="list-disc list-inside space-y-2 ml-4">
-              <li>Email us at <a href="mailto:security@keyflow.app" class="text-primary hover:text-primary">security@keyflow.app</a></li>
+              <li>Email us at <a href="mailto:security@keyflow.click" class="text-primary hover:text-primary">security@keyflow.click</a></li>
               <li>Provide detailed information about the vulnerability</li>
               <li>Allow us reasonable time to address the issue before public disclosure</li>
               <li>We commit to acknowledging reports within 48 hours</li>
@@ -175,7 +175,7 @@
             <h2 class="text-2xl font-bold text-slate-50 mb-4">15. Contact Information</h2>
             <p class="leading-relaxed">
               For security concerns or questions, contact our security team at:
-              <a href="mailto:security@keyflow.app" class="text-primary hover:text-primary ml-1">security@keyflow.app</a>
+              <a href="mailto:security@keyflow.click" class="text-primary hover:text-primary ml-1">security@keyflow.click</a>
             </p>
           </section>
         </div>
