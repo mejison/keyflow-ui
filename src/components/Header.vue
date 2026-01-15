@@ -1,13 +1,16 @@
 <template>
   <header class="border-b border-slate-700/50 backdrop-blur-sm bg-slate-900/50 sticky top-0 z-40">
     <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
-      <RouterLink to="/" class="hover:opacity-80 transition-opacity">
+      <RouterLink to="/" class="hover:opacity-80 transition-opacity flex items-center gap-2">
         <h1 
           class="text-3xl font-bold bg-clip-text text-transparent"
           style="background-image: linear-gradient(to right, var(--color-primary), var(--color-secondary))"
         >
           Keyflow
         </h1>
+        <span class="text-xs font-semibold px-2 py-0.5 rounded bg-primary/20 text-primary border border-primary/30">
+          BETA
+        </span>
       </RouterLink>
       
       <div class="flex items-center gap-4">
