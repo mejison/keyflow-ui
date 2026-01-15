@@ -12,7 +12,7 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn()
 }
-global.localStorage = localStorageMock as any
+;(globalThis as any).localStorage = localStorageMock
 
 describe('Router', () => {
   beforeEach(() => {
@@ -133,7 +133,7 @@ describe('Router', () => {
       getItem: vi.fn(),
       setItem: vi.fn()
     }
-    global.sessionStorage = sessionStorageMock as any
+    ;(globalThis as any).sessionStorage = sessionStorageMock
     
     localStorageMock.getItem.mockReturnValue(null)
     

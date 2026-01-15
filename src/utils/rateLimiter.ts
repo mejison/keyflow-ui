@@ -49,11 +49,13 @@ export class RateLimiter {
   private queue: Array<() => void> = []
   private processing = false
   private lastCallTime = 0
+  private minInterval: number
+  private maxQueueSize: number
 
-  constructor(
-    private minInterval: number = 1000, // Minimum time between calls in ms
-    private maxQueueSize: number = 10
-  ) {}
+  constructor(minInterval: number = 1000, maxQueueSize: number = 10) {
+    this.minInterval = minInterval
+    this.maxQueueSize = maxQueueSize
+  }
 
   async execute<T>(fn: () => Promise<T>): Promise<T> {
     return new Promise((resolve, reject) => {
