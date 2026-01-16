@@ -13,8 +13,8 @@ export function useMeta() {
   const defaultOptions = {
     title: 'KeyFlow - Master Your Typing Speed',
     description: 'Improve your typing speed and accuracy with KeyFlow. Practice typing tests, track your progress, and compete on the global leaderboard.',
-    image: 'https://keyflow.app/logo.svg',
-    url: 'https://keyflow.app/',
+    image: 'https://keyflow.click/logo.svg',
+    url: 'https://keyflow.click/',
     type: 'website',
     keywords: 'typing test, typing speed, WPM, words per minute, typing practice'
   }

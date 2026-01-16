@@ -18,8 +18,8 @@
           <!-- Content -->
           <div class="p-6">
             <p class="text-slate-300 mb-6 leading-relaxed">
-              Feel free to send an email to <a href="mailto:contact@keyflow.app" class="text-primary hover:text-primary">contact@keyflow.app</a>. 
-              For business inquiries, email <a href="mailto:business@keyflow.app" class="text-primary hover:text-primary">business@keyflow.app</a> 
+              Feel free to send an email to <a href="mailto:contact@keyflow.click" class="text-primary hover:text-primary">contact@keyflow.click</a>. 
+              For business inquiries, email <a href="mailto:business@keyflow.click" class="text-primary hover:text-primary">business@keyflow.click</a> 
               (the buttons below will open the default mail client).
             </p>
 
@@ -31,7 +31,7 @@
             <!-- Contact Type Buttons -->
             <div class="grid grid-cols-2 gap-4">
               <a 
-                href="mailto:contact@keyflow.app?subject=Question"
+                href="mailto:contact@keyflow.click?subject=Question"
                 class="flex items-center gap-3 p-4 bg-slate-900/50 hover:bg-slate-900/70 rounded-xl border border-slate-700 transition-all group"
               >
                 <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -43,7 +43,7 @@
               </a>
 
               <a 
-                href="mailto:contact@keyflow.app?subject=Feedback"
+                href="mailto:contact@keyflow.click?subject=Feedback"
                 class="flex items-center gap-3 p-4 bg-slate-900/50 hover:bg-slate-900/70 rounded-xl border border-slate-700 transition-all group"
               >
                 <div class="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center group-hover:bg-secondary/20 transition-colors">
@@ -55,7 +55,7 @@
               </a>
 
               <a 
-                href="mailto:contact@keyflow.app?subject=Bug%20Report"
+                href="mailto:contact@keyflow.click?subject=Bug%20Report"
                 class="flex items-center gap-3 p-4 bg-slate-900/50 hover:bg-slate-900/70 rounded-xl border border-slate-700 transition-all group"
               >
                 <div class="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
@@ -67,7 +67,7 @@
               </a>
 
               <a 
-                href="mailto:contact@keyflow.app?subject=Account%20Help"
+                href="mailto:contact@keyflow.click?subject=Account%20Help"
                 class="flex items-center gap-3 p-4 bg-slate-900/50 hover:bg-slate-900/70 rounded-xl border border-slate-700 transition-all group"
               >
                 <div class="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
@@ -79,7 +79,7 @@
               </a>
 
               <a 
-                href="mailto:business@keyflow.app?subject=Business%20Inquiry"
+                href="mailto:business@keyflow.click?subject=Business%20Inquiry"
                 class="flex items-center gap-3 p-4 bg-slate-900/50 hover:bg-slate-900/70 rounded-xl border border-slate-700 transition-all group"
               >
                 <div class="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
@@ -91,7 +91,7 @@
               </a>
 
               <a 
-                href="mailto:contact@keyflow.app?subject=Other"
+                href="mailto:contact@keyflow.click?subject=Other"
                 class="flex items-center gap-3 p-4 bg-slate-900/50 hover:bg-slate-900/70 rounded-xl border border-slate-700 transition-all group"
               >
                 <div class="w-10 h-10 bg-slate-500/10 rounded-lg flex items-center justify-center group-hover:bg-slate-500/20 transition-colors">

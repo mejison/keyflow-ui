@@ -10,4 +10,4 @@ Disallow: /reset-password
 Disallow: /auth/
 
 # Sitemap location
-Sitemap: https://keyflow.app/sitemap.xml
+Sitemap: https://keyflow.click/sitemap.xml

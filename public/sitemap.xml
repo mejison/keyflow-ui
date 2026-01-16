@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://keyflow.app/</loc>
+    <loc>https://keyflow.click/</loc>
     <lastmod>2026-01-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://keyflow.app/leaderboard</loc>
+    <loc>https://keyflow.click/leaderboard</loc>
     <lastmod>2026-01-15</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://keyflow.app/settings</loc>
+    <loc>https://keyflow.click/settings</loc>
     <lastmod>2026-01-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://keyflow.app/login</loc>
+    <loc>https://keyflow.click/login</loc>
     <lastmod>2026-01-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://keyflow.app/signup</loc>
+    <loc>https://keyflow.click/signup</loc>
     <lastmod>2026-01-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://keyflow.app/privacy-policy</loc>
+    <loc>https://keyflow.click/privacy-policy</loc>
     <lastmod>2026-01-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://keyflow.app/terms-of-service</loc>
+    <loc>https://keyflow.click/terms-of-service</loc>
     <lastmod>2026-01-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://keyflow.app/security-policy</loc>
+    <loc>https://keyflow.click/security-policy</loc>
     <lastmod>2026-01-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
