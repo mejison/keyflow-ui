@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { authApi, api, type User as ApiUser } from '@/services/api'
+import { authApi, type User as ApiUser } from '@/services/api'
 import { AxiosError } from 'axios'
 import { useToast } from '@/composables/useToast'
 import { stopSessionMonitoring, startSessionMonitoring } from '@/utils/session'
@@ -120,25 +120,10 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const loginWithProvider = async (provider: 'github' | 'google') => {
-    loading.value = true
-    error.value = null
-    try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
-      
-      // Initialize CSRF cookie for Laravel Sanctum
-      try {
-        await api.get('/sanctum/csrf-cookie')
-      } catch (csrfError) {
-        console.warn('CSRF cookie initialization failed, continuing anyway:', csrfError)
-      }
-      
-      // Redirect to backend OAuth endpoint
-      window.location.href = `${API_BASE_URL}/api/v1/auth/social/${provider}`
-    } catch (err) {
-      error.value = handleError(err)
-      loading.value = false
-      throw new Error(error.value)
-    }
+    loading.value = false
+    error.value = 'OAuth login is not configured in this deployment'
+    toast.error(error.value)
+    throw new Error(error.value)
   }
 
   const handleOAuthCallback = async (provider: 'github' | 'google', code: string) => {

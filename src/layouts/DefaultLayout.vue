@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col">
-    <Header />
+    <Header v-show="!settingsStore.settings.cinemaMode" />
 
     <!-- Main Content -->
     <main class="py-16 flex-1">
@@ -8,7 +8,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-8">
+    <footer v-show="!settingsStore.settings.cinemaMode" class="py-8">
       <div class="container mx-auto px-4">
         <div class="flex items-center justify-center text-slate-500 text-sm">
           <div class="grid grid-cols-2 md:flex md:flex-row items-center gap-4 md:gap-6">
@@ -32,12 +32,12 @@
     <ContactModal :is-open="showContactModal" @close="showContactModal = false" />
     
     <!-- Theme Selector - Fixed Bottom Right -->
-    <div class="fixed bottom-6 right-6 z-50">
+    <div v-show="!settingsStore.settings.cinemaMode" class="fixed bottom-6 right-6 z-50">
       <ThemeSelector />
     </div>
     
     <!-- Ko-fi Support - Fixed Bottom Right (above theme selector) -->
-    <div class="fixed bottom-24 right-6 z-40 flex items-center gap-3">
+    <div v-show="!settingsStore.settings.cinemaMode" class="fixed bottom-24 right-6 z-40 flex items-center gap-3">
       <!-- Hint text -->
       <div class="text-slate-400 text-lg tracking-tight hidden lg:flex items-center gap-1.5" style="font-family: 'Caveat', cursive; font-weight: 600;">
         <span>Buy me a coffee</span>
@@ -62,7 +62,9 @@ import { RouterLink } from 'vue-router'
 import Header from '@/components/Header.vue'
 import ContactModal from '@/components/ContactModal.vue'
 import ThemeSelector from '@/components/ThemeSelector.vue'
+import { useSettingsStore } from '@/stores/settings'
 
+const settingsStore = useSettingsStore()
 const showContactModal = ref(false)
 </script>
 

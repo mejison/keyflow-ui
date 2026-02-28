@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios'
 import { useToast } from '@/composables/useToast'
 import { RateLimiter } from '@/utils/rateLimiter'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
 
 // Create rate limiter instance (max 1 request per second)
 const rateLimiter = new RateLimiter(1000, 20)
@@ -14,7 +14,7 @@ export const api = axios.create({
     'Accept': 'application/json',
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // For Laravel Sanctum CSRF protection
+  withCredentials: false,
 })
 
 // Add token to requests if available

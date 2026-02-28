@@ -2,7 +2,7 @@
   <DefaultLayout>
     <div class="container mx-auto max-w-4xl px-4">
       <!-- Welcome Section -->
-      <div class="text-center mb-12">
+      <div v-show="!settingsStore.settings.cinemaMode" class="text-center mb-12">
         <h2 class="text-5xl md:text-6xl font-bold text-slate-50 mb-5 tracking-tight">
           Improve Your Typing Speed
         </h2>
@@ -28,7 +28,9 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import TypingArea from '@/components/TypingArea.vue'
 import LanguageSelector from '@/components/LanguageSelector.vue'
 import { useMeta } from '@/composables/useMeta'
+import { useSettingsStore } from '@/stores/settings'
 
+const settingsStore = useSettingsStore()
 const { setMeta } = useMeta()
 
 onMounted(() => {

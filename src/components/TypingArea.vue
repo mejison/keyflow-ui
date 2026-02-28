@@ -1,10 +1,14 @@
 <template>
   <div>
     <!-- Timer (reserved space to avoid jumping) -->
-    <div class="text-center mb-4 h-[50px] flex items-center justify-center">
+    <div 
+      class="text-center mb-4 flex items-center justify-center transition-all duration-300"
+      :class="settingsStore.settings.cinemaMode ? 'fixed top-10 left-1/2 -translate-x-1/2 z-[60]' : 'h-[50px]'"
+    >
       <div 
         v-if="typingStore.isStarted && !typingStore.isFinished" 
-        class="inline-flex items-center gap-3 bg-slate-800/60 backdrop-blur-sm px-8 py-4 rounded-full border border-primary/30 shadow-lg"
+        class="inline-flex items-center gap-3 backdrop-blur-sm rounded-full border border-primary/30 shadow-lg transition-all"
+        :class="settingsStore.settings.cinemaMode ? 'bg-slate-900/80 px-10 py-5 scale-125' : 'bg-slate-800/60 px-8 py-4'"
       >
         <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -37,11 +41,13 @@
       @keydown="handleKeyDown"
       @click="focusArea"
       @blur="handleBlur"
-      :style="{ fontSize: fontSizeMap[settingsStore.settings.fontSize] + 'px' }"
-      class="rounded-2xl p-12 font-mono leading-[1.9] focus:outline-none cursor-text transition-all min-h-[320px] bg-slate-900/30 hover:bg-slate-900/40 select-none break-words"
+      :style="{ fontSize: settingsStore.settings.cinemaMode ? '64px' : fontSizeMap[settingsStore.settings.fontSize] + 'px' }"
+      class="rounded-2xl font-mono leading-[1.9] focus:outline-none cursor-text transition-all min-h-[320px] select-none break-words"
       :class="{ 
         'pointer-events-none opacity-50': typingStore.isFinished,
-        'opacity-75': !typingStore.isStarted 
+        'opacity-75': !typingStore.isStarted,
+        'p-12 bg-slate-900/30 hover:bg-slate-900/40': !settingsStore.settings.cinemaMode,
+        'fixed inset-0 z-50 flex flex-wrap content-center items-center justify-center p-20 bg-slate-950/95 backdrop-blur-xl': settingsStore.settings.cinemaMode
       }"
     >
       <span
@@ -135,6 +141,14 @@
           </div>
         </div>
       </div>
+    </div>
+    <!-- Cinema Mode Exit Hint -->
+    <div 
+      v-if="settingsStore.settings.cinemaMode"
+      class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] text-slate-500 text-sm opacity-0 hover:opacity-100 transition-opacity duration-300 bg-slate-900/80 px-4 py-2 rounded-full border border-slate-700/50 backdrop-blur-sm cursor-pointer"
+      @click="settingsStore.updateSetting('cinemaMode', false)"
+    >
+      Press <kbd class="font-bold text-slate-300">Esc</kbd> or <kbd class="font-bold text-slate-300">Alt+C</kbd> to exit
     </div>
   </div>
 </template>
@@ -271,6 +285,9 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
   // Esc - перезапуск
   if (event.key === 'Escape') {
+    // If Cinema Mode is on, let the global handler in App.vue handle it
+    if (settingsStore.settings.cinemaMode) return
+    
     event.preventDefault()
     restart()
     return

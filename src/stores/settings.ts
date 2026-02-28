@@ -7,12 +7,14 @@ export interface Settings {
   testDuration: 15 | 30 | 60 | 120
   soundEnabled: boolean
   fontSize: 'small' | 'medium' | 'large'
+  cinemaMode: boolean
 }
 
 const DEFAULT_SETTINGS: Settings = {
   testDuration: 60,
   soundEnabled: false,
   fontSize: 'medium',
+  cinemaMode: false,
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -34,6 +36,7 @@ export const useSettingsStore = defineStore('settings', () => {
       testDuration: apiSettings.test_duration || 60,
       soundEnabled: apiSettings.sound_enabled !== undefined ? apiSettings.sound_enabled : false,
       fontSize: fontSize,
+      cinemaMode: false, // Don't persist cinema mode from API for now, it's a local toggle
     }
   }
 
@@ -49,7 +52,7 @@ export const useSettingsStore = defineStore('settings', () => {
     return {
       test_duration: localSettings.testDuration,
       sound_enabled: localSettings.soundEnabled,
-      font_size: fontSizeMap[localSettings.fontSize] || 16,
+      font_size: (fontSizeMap[localSettings.fontSize] || 16).toString(),
     }
   }
 
@@ -71,11 +74,11 @@ export const useSettingsStore = defineStore('settings', () => {
       try {
         loading.value = true
         const response = await settingsApi.getSettings()
-        
+
         // API returns data.settings, not just data
         const apiData = (response.data as any)?.settings || response.data
         const apiSettings = apiToLocal(apiData)
-        
+
         settings.value = apiSettings
         // Save to localStorage as backup
         localStorage.setItem('keyflow_settings', JSON.stringify(apiSettings))
@@ -91,7 +94,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const saveSettings = async () => {
     // Save to localStorage
     localStorage.setItem('keyflow_settings', JSON.stringify(settings.value))
-    
+
     const token = localStorage.getItem('auth_token')
     if (token) {
       try {
