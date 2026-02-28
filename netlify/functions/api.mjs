@@ -601,9 +601,14 @@ export async function handler(event) {
 
   const method = event.httpMethod
   const path = extractPath(event)
+  const normalizedPath = path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path
+  const apiPath =
+    normalizedPath === '/api' || normalizedPath.startsWith('/api/')
+      ? normalizedPath
+      : `/api${normalizedPath}`
 
   try {
-    if (method === 'GET' && path === '/api/health') {
+    if (method === 'GET' && apiPath === '/api/health') {
       return json(200, {
         status: 'ok',
         service: 'keyflow-netlify-api',
@@ -611,38 +616,38 @@ export async function handler(event) {
       })
     }
 
-    if (method === 'POST' && path === '/api/v1/auth/register') return handleRegister(event, db)
-    if (method === 'POST' && path === '/api/v1/auth/login') return handleLogin(event, db)
-    if (method === 'GET' && path === '/api/v1/auth/me') return handleMe(event, db)
-    if (method === 'POST' && path === '/api/v1/auth/logout') return json(200, { message: 'Logged out' })
+    if (method === 'POST' && apiPath === '/api/v1/auth/register') return handleRegister(event, db)
+    if (method === 'POST' && apiPath === '/api/v1/auth/login') return handleLogin(event, db)
+    if (method === 'GET' && apiPath === '/api/v1/auth/me') return handleMe(event, db)
+    if (method === 'POST' && apiPath === '/api/v1/auth/logout') return json(200, { message: 'Logged out' })
 
-    if (method === 'POST' && path === '/api/v1/auth/forgot-password') {
+    if (method === 'POST' && apiPath === '/api/v1/auth/forgot-password') {
       return json(200, { message: 'If this email exists, password reset instructions were sent.' })
     }
-    if (method === 'POST' && path === '/api/v1/auth/reset-password') {
+    if (method === 'POST' && apiPath === '/api/v1/auth/reset-password') {
       return unsupportedFeature('Password reset')
     }
 
-    if (path === '/api/v1/auth/social/google' || path === '/api/v1/auth/social/github') {
+    if (apiPath === '/api/v1/auth/social/google' || apiPath === '/api/v1/auth/social/github') {
       return unsupportedFeature('OAuth')
     }
-    if (path === '/api/v1/auth/social/google/callback' || path === '/api/v1/auth/social/github/callback') {
+    if (apiPath === '/api/v1/auth/social/google/callback' || apiPath === '/api/v1/auth/social/github/callback') {
       return unsupportedFeature('OAuth callback')
     }
 
-    if (method === 'POST' && path === '/api/v1/typing-tests') return handleSaveTypingTest(event, db)
-    if (method === 'GET' && path === '/api/v1/typing-tests/statistics') return handleStatistics(event, db)
-    if (method === 'GET' && path === '/api/v1/typing-tests/recent-activity') return handleRecentActivity(event, db)
+    if (method === 'POST' && apiPath === '/api/v1/typing-tests') return handleSaveTypingTest(event, db)
+    if (method === 'GET' && apiPath === '/api/v1/typing-tests/statistics') return handleStatistics(event, db)
+    if (method === 'GET' && apiPath === '/api/v1/typing-tests/recent-activity') return handleRecentActivity(event, db)
 
-    if (method === 'GET' && path === '/api/v1/leaderboard/wpm') return handleLeaderboard(event, db, 'wpm')
-    if (method === 'GET' && path === '/api/v1/leaderboard/accuracy') return handleLeaderboard(event, db, 'accuracy')
-    if (method === 'GET' && path === '/api/v1/leaderboard/tests') return handleLeaderboard(event, db, 'tests')
-    if (method === 'GET' && path === '/api/v1/leaderboard/combined') return handleLeaderboard(event, db, 'combined')
-    if (method === 'GET' && path === '/api/v1/leaderboard/my-rank') return handleMyRank(event, db)
+    if (method === 'GET' && apiPath === '/api/v1/leaderboard/wpm') return handleLeaderboard(event, db, 'wpm')
+    if (method === 'GET' && apiPath === '/api/v1/leaderboard/accuracy') return handleLeaderboard(event, db, 'accuracy')
+    if (method === 'GET' && apiPath === '/api/v1/leaderboard/tests') return handleLeaderboard(event, db, 'tests')
+    if (method === 'GET' && apiPath === '/api/v1/leaderboard/combined') return handleLeaderboard(event, db, 'combined')
+    if (method === 'GET' && apiPath === '/api/v1/leaderboard/my-rank') return handleMyRank(event, db)
 
-    if (method === 'GET' && path === '/api/v1/settings') return handleSettingsGet(event, db)
-    if (method === 'PUT' && path === '/api/v1/settings') return handleSettingsUpdate(event, db)
-    if (method === 'DELETE' && path === '/api/v1/settings') return handleSettingsReset(event, db)
+    if (method === 'GET' && apiPath === '/api/v1/settings') return handleSettingsGet(event, db)
+    if (method === 'PUT' && apiPath === '/api/v1/settings') return handleSettingsUpdate(event, db)
+    if (method === 'DELETE' && apiPath === '/api/v1/settings') return handleSettingsReset(event, db)
 
     return json(404, { message: 'Not found' })
   } catch (error) {
