@@ -8,7 +8,7 @@
         </div>
 
         <!-- OAuth Buttons -->
-        <div class="space-y-3 mb-6">
+        <div v-if="oauthEnabled" class="space-y-3 mb-6">
           <button
             @click="handleOAuthLogin('github')"
             class="w-full py-3 px-4 bg-slate-900/50 hover:bg-slate-900/70 border border-slate-600 rounded-xl font-medium text-slate-200 transition-all flex items-center justify-center gap-3"
@@ -33,7 +33,7 @@
           </button>
         </div>
 
-        <div class="relative my-6">
+        <div v-if="oauthEnabled" class="relative my-6">
           <div class="absolute inset-0 flex items-center">
             <div class="w-full border-t border-slate-700"></div>
           </div>
@@ -69,7 +69,11 @@
               <label for="password" class="block text-sm font-medium text-slate-300">
                 Password
               </label>
-              <RouterLink to="/forgot-password" class="text-sm text-primary hover:text-primary">
+              <RouterLink
+                v-if="passwordResetEnabled"
+                to="/forgot-password"
+                class="text-sm text-primary hover:text-primary"
+              >
                 Forgot password?
               </RouterLink>
             </div>
@@ -125,6 +129,8 @@ const email = ref('')
 const password = ref('')
 const error = ref('')
 const isLoading = ref(false)
+const oauthEnabled = import.meta.env.VITE_OAUTH_ENABLED === 'true'
+const passwordResetEnabled = import.meta.env.VITE_PASSWORD_RESET_ENABLED === 'true'
 
 const handleSubmit = async () => {
   error.value = ''

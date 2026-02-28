@@ -120,10 +120,17 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const loginWithProvider = async (provider: 'github' | 'google') => {
-    loading.value = false
-    error.value = 'OAuth login is not configured in this deployment'
-    toast.error(error.value)
-    throw new Error(error.value)
+    loading.value = true
+    error.value = null
+    try {
+      window.location.href = `/api/v1/auth/social/${provider}`
+    } catch (err) {
+      error.value = handleError(err)
+      toast.error(error.value)
+      throw new Error(error.value)
+    } finally {
+      loading.value = false
+    }
   }
 
   const handleOAuthCallback = async (provider: 'github' | 'google', code: string) => {

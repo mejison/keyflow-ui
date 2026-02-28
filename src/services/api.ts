@@ -277,7 +277,7 @@ export const authApi = {
     const response = await api.get<ApiResponse<AuthResponse>>(
       `/api/v1/auth/social/${provider}/callback`,
       {
-        params: { code },
+        params: { code, mode: 'json' },
       }
     )
     return response.data

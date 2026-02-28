@@ -23,7 +23,12 @@ function getMongoUri() {
 async function getDb() {
   if (!clientPromise) {
     const uri = getMongoUri()
-    const client = new MongoClient(uri)
+    const client = new MongoClient(uri, {
+      serverSelectionTimeoutMS: 8000,
+      connectTimeoutMS: 8000,
+      socketTimeoutMS: 15000,
+      maxPoolSize: 5,
+    })
     clientPromise = client.connect()
   }
 
@@ -45,6 +50,19 @@ function json(statusCode, body) {
   }
 }
 
+function redirect(location, statusCode = 302) {
+  return {
+    statusCode,
+    headers: {
+      Location: location,
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    },
+    body: '',
+  }
+}
+
 function parseBody(event) {
   if (!event.body) return {}
   try {
@@ -52,6 +70,270 @@ function parseBody(event) {
   } catch {
     return {}
   }
+}
+
+function getRequestOrigin(event) {
+  const protoHeader = event.headers?.['x-forwarded-proto'] || event.headers?.['X-Forwarded-Proto']
+  const hostHeader = event.headers?.host || event.headers?.Host
+  const proto = protoHeader ? String(protoHeader).split(',')[0].trim() : 'https'
+  const host = hostHeader ? String(hostHeader).split(',')[0].trim() : ''
+  return host ? `${proto}://${host}` : ''
+}
+
+function getAppUrl(event) {
+  return process.env.APP_URL || getRequestOrigin(event)
+}
+
+function getFrontendUrl(event) {
+  return process.env.FRONTEND_URL || getAppUrl(event)
+}
+
+function toQueryString(params) {
+  const query = new URLSearchParams()
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== '') {
+      query.set(key, String(value))
+    }
+  }
+  return query.toString()
+}
+
+function createOAuthState(provider) {
+  return signToken({
+    typ: 'oauth-state',
+    provider,
+    nonce: crypto.randomBytes(8).toString('hex'),
+  })
+}
+
+function verifyOAuthState(state, provider) {
+  if (!state) return false
+  const payload = verifyToken(state)
+  return Boolean(payload && payload.typ === 'oauth-state' && payload.provider === provider)
+}
+
+function getOAuthConfig(provider, event) {
+  const appUrl = getAppUrl(event)
+  if (!appUrl) {
+    throw new Error('APP_URL is not configured')
+  }
+
+  if (provider === 'google') {
+    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+      throw new Error('Google OAuth environment variables are not configured')
+    }
+
+    return {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      redirectUri: process.env.GOOGLE_REDIRECT_URL || `${appUrl}/api/v1/auth/social/google/callback`,
+    }
+  }
+
+  if (provider === 'github') {
+    if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
+      throw new Error('GitHub OAuth environment variables are not configured')
+    }
+
+    return {
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      redirectUri: process.env.GITHUB_REDIRECT_URL || `${appUrl}/api/v1/auth/social/github/callback`,
+    }
+  }
+
+  throw new Error('Unsupported OAuth provider')
+}
+
+async function fetchGoogleProfile(code, config) {
+  const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: toQueryString({
+      code,
+      client_id: config.clientId,
+      client_secret: config.clientSecret,
+      redirect_uri: config.redirectUri,
+      grant_type: 'authorization_code',
+    }),
+  })
+
+  const tokenData = await tokenRes.json()
+  if (!tokenRes.ok || !tokenData.access_token) {
+    throw new Error(tokenData.error_description || tokenData.error || 'Google token exchange failed')
+  }
+
+  const profileRes = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
+    headers: {
+      Authorization: `Bearer ${tokenData.access_token}`,
+      Accept: 'application/json',
+    },
+  })
+  const profile = await profileRes.json()
+  if (!profileRes.ok || !profile.email) {
+    throw new Error(profile.error_description || profile.error || 'Google profile fetch failed')
+  }
+
+  return {
+    email: String(profile.email).toLowerCase(),
+    name: profile.name || profile.email.split('@')[0],
+    avatar: profile.picture || null,
+    provider: 'google',
+  }
+}
+
+async function fetchGithubProfile(code, config) {
+  const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Accept: 'application/json',
+    },
+    body: toQueryString({
+      code,
+      client_id: config.clientId,
+      client_secret: config.clientSecret,
+      redirect_uri: config.redirectUri,
+    }),
+  })
+
+  const tokenData = await tokenRes.json()
+  if (!tokenRes.ok || !tokenData.access_token) {
+    throw new Error(tokenData.error_description || tokenData.error || 'GitHub token exchange failed')
+  }
+
+  const [profileRes, emailsRes] = await Promise.all([
+    fetch('https://api.github.com/user', {
+      headers: {
+        Authorization: `Bearer ${tokenData.access_token}`,
+        Accept: 'application/json',
+        'User-Agent': 'keyflow-netlify-api',
+      },
+    }),
+    fetch('https://api.github.com/user/emails', {
+      headers: {
+        Authorization: `Bearer ${tokenData.access_token}`,
+        Accept: 'application/json',
+        'User-Agent': 'keyflow-netlify-api',
+      },
+    }),
+  ])
+
+  const profile = await profileRes.json()
+  const emails = await emailsRes.json()
+  const selectedEmail =
+    Array.isArray(emails) &&
+    (emails.find((item) => item.primary && item.verified) ||
+      emails.find((item) => item.verified) ||
+      emails[0])
+
+  const email = selectedEmail?.email || profile.email
+  if (!profileRes.ok || !email) {
+    throw new Error('GitHub profile fetch failed: email is required')
+  }
+
+  return {
+    email: String(email).toLowerCase(),
+    name: profile.name || profile.login || String(email).split('@')[0],
+    avatar: profile.avatar_url || null,
+    provider: 'github',
+  }
+}
+
+async function upsertOAuthUser(db, oauthUser) {
+  const users = db.collection('users')
+  const now = new Date()
+  const existing = await users.findOne({ email: oauthUser.email })
+
+  if (existing) {
+    await users.updateOne(
+      { _id: existing._id },
+      {
+        $set: {
+          name: oauthUser.name || existing.name,
+          avatar: oauthUser.avatar || existing.avatar || null,
+          provider: oauthUser.provider,
+          updatedAt: now,
+        },
+      }
+    )
+    return users.findOne({ _id: existing._id })
+  }
+
+  const insert = await users.insertOne({
+    name: oauthUser.name,
+    email: oauthUser.email,
+    password_hash: null,
+    provider: oauthUser.provider,
+    avatar: oauthUser.avatar || null,
+    createdAt: now,
+    updatedAt: now,
+  })
+
+  return users.findOne({ _id: insert.insertedId })
+}
+
+async function handleOAuthStart(event, provider) {
+  const config = getOAuthConfig(provider, event)
+  const state = createOAuthState(provider)
+
+  if (provider === 'google') {
+    const url = new URL('https://accounts.google.com/o/oauth2/v2/auth')
+    url.search = toQueryString({
+      client_id: config.clientId,
+      redirect_uri: config.redirectUri,
+      response_type: 'code',
+      scope: 'openid email profile',
+      prompt: 'select_account',
+      state,
+    })
+    return redirect(url.toString())
+  }
+
+  const url = new URL('https://github.com/login/oauth/authorize')
+  url.search = toQueryString({
+    client_id: config.clientId,
+    redirect_uri: config.redirectUri,
+    scope: 'read:user user:email',
+    state,
+  })
+  return redirect(url.toString())
+}
+
+async function handleOAuthCallback(event, db, provider) {
+  const code = event.queryStringParameters?.code
+  const state = event.queryStringParameters?.state
+  const mode = event.queryStringParameters?.mode
+  const acceptHeader = String(event.headers?.accept || event.headers?.Accept || '').toLowerCase()
+  const expectsJson = mode === 'json' || acceptHeader.includes('application/json')
+
+  if (!code) return json(422, { message: 'OAuth code is required' })
+  if (state && !verifyOAuthState(state, provider)) return json(422, { message: 'Invalid OAuth state' })
+
+  const config = getOAuthConfig(provider, event)
+  const oauthUser =
+    provider === 'google'
+      ? await fetchGoogleProfile(code, config)
+      : await fetchGithubProfile(code, config)
+
+  const user = await upsertOAuthUser(db, oauthUser)
+  const token = signToken({ sub: user._id.toString(), email: user.email })
+  const normalizedUser = normalizeUser(user)
+
+  if (expectsJson) {
+    return json(200, {
+      data: {
+        access_token: token,
+        token_type: 'Bearer',
+        user: normalizedUser,
+      },
+    })
+  }
+
+  const frontendUrl = getFrontendUrl(event)
+  const callbackUrl = new URL(`/auth/callback/${provider}`, frontendUrl)
+  callbackUrl.searchParams.set('token', token)
+  return redirect(callbackUrl.toString())
 }
 
 function base64UrlEncode(input) {
@@ -628,11 +910,17 @@ export async function handler(event) {
       return unsupportedFeature('Password reset')
     }
 
-    if (apiPath === '/api/v1/auth/social/google' || apiPath === '/api/v1/auth/social/github') {
-      return unsupportedFeature('OAuth')
+    if (method === 'GET' && apiPath === '/api/v1/auth/social/google') {
+      return handleOAuthStart(event, 'google')
     }
-    if (apiPath === '/api/v1/auth/social/google/callback' || apiPath === '/api/v1/auth/social/github/callback') {
-      return unsupportedFeature('OAuth callback')
+    if (method === 'GET' && apiPath === '/api/v1/auth/social/github') {
+      return handleOAuthStart(event, 'github')
+    }
+    if (method === 'GET' && apiPath === '/api/v1/auth/social/google/callback') {
+      return handleOAuthCallback(event, db, 'google')
+    }
+    if (method === 'GET' && apiPath === '/api/v1/auth/social/github/callback') {
+      return handleOAuthCallback(event, db, 'github')
     }
 
     if (method === 'POST' && apiPath === '/api/v1/typing-tests') return handleSaveTypingTest(event, db)

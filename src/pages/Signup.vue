@@ -8,7 +8,7 @@
         </div>
 
         <!-- OAuth Buttons -->
-        <div class="space-y-3 mb-6">
+        <div v-if="oauthEnabled" class="space-y-3 mb-6">
           <button
             @click="handleOAuthSignup('github')"
             class="w-full py-3 px-4 bg-slate-900/50 hover:bg-slate-900/70 border border-slate-600 rounded-xl font-medium text-slate-200 transition-all flex items-center justify-center gap-3"
@@ -33,7 +33,7 @@
           </button>
         </div>
 
-        <div class="relative my-6">
+        <div v-if="oauthEnabled" class="relative my-6">
           <div class="absolute inset-0 flex items-center">
             <div class="w-full border-t border-slate-700"></div>
           </div>
@@ -155,6 +155,7 @@ const password = ref('')
 const passwordConfirmation = ref('')
 const error = ref('')
 const isLoading = ref(false)
+const oauthEnabled = import.meta.env.VITE_OAUTH_ENABLED === 'true'
 
 const handleSubmit = async () => {
   error.value = ''
