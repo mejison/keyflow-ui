@@ -8,6 +8,7 @@ const DEFAULT_SETTINGS = {
   smooth_caret: true,
   quick_restart: true,
   font_size: '16',
+  cinema_mode: false,
 }
 
 let clientPromise
@@ -809,6 +810,7 @@ function normalizeSettings(settings) {
     smooth_caret: settings?.smooth_caret ?? DEFAULT_SETTINGS.smooth_caret,
     quick_restart: settings?.quick_restart ?? DEFAULT_SETTINGS.quick_restart,
     font_size: String(settings?.font_size || DEFAULT_SETTINGS.font_size),
+    cinema_mode: settings?.cinema_mode ?? DEFAULT_SETTINGS.cinema_mode,
   }
 }
 
@@ -833,6 +835,7 @@ async function handleSettingsUpdate(event, db) {
   if (body.smooth_caret !== undefined) update.smooth_caret = Boolean(body.smooth_caret)
   if (body.quick_restart !== undefined) update.quick_restart = Boolean(body.quick_restart)
   if (body.font_size !== undefined) update.font_size = String(body.font_size)
+  if (body.cinema_mode !== undefined) update.cinema_mode = Boolean(body.cinema_mode)
 
   update.updatedAt = new Date()
 

@@ -405,6 +405,7 @@ export const settingsApi = {
       smooth_caret: boolean
       quick_restart: boolean
       font_size: string
+      cinema_mode: boolean
     }>>('/api/v1/settings')
     return response.data
   },
@@ -412,22 +413,24 @@ export const settingsApi = {
   // Update settings
   updateSettings: async (settings: {
     test_duration?: number
-    show_errors?: boolean
-    sound_enabled?: boolean
-    smooth_caret?: boolean
-    quick_restart?: boolean
-    font_size?: string
-  }) => {
-    const response = await api.put<ApiResponse<{
-      test_duration: number
-      show_errors: boolean
-      sound_enabled: boolean
-      smooth_caret: boolean
-      quick_restart: boolean
-      font_size: string
-    }>>('/api/v1/settings', settings)
-    return response.data
-  },
+      show_errors?: boolean
+      sound_enabled?: boolean
+      smooth_caret?: boolean
+      quick_restart?: boolean
+      font_size?: string
+      cinema_mode?: boolean
+    }) => {
+      const response = await api.put<ApiResponse<{
+        test_duration: number
+        show_errors: boolean
+        sound_enabled: boolean
+        smooth_caret: boolean
+        quick_restart: boolean
+        font_size: string
+        cinema_mode: boolean
+      }>>('/api/v1/settings', settings)
+      return response.data
+    },
 
   // Reset settings to defaults
   resetSettings: async () => {
@@ -438,6 +441,7 @@ export const settingsApi = {
       smooth_caret: boolean
       quick_restart: boolean
       font_size: string
+      cinema_mode: boolean
     }>>('/api/v1/settings')
     return response.data
   },

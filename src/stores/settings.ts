@@ -36,7 +36,7 @@ export const useSettingsStore = defineStore('settings', () => {
       testDuration: apiSettings.test_duration || 60,
       soundEnabled: apiSettings.sound_enabled !== undefined ? apiSettings.sound_enabled : false,
       fontSize: fontSize,
-      cinemaMode: false, // Don't persist cinema mode from API for now, it's a local toggle
+      cinemaMode: apiSettings.cinema_mode !== undefined ? apiSettings.cinema_mode : false,
     }
   }
 
@@ -53,6 +53,7 @@ export const useSettingsStore = defineStore('settings', () => {
       test_duration: localSettings.testDuration,
       sound_enabled: localSettings.soundEnabled,
       font_size: (fontSizeMap[localSettings.fontSize] || 16).toString(),
+      cinema_mode: localSettings.cinemaMode,
     }
   }
 
@@ -158,4 +159,3 @@ export const useSettingsStore = defineStore('settings', () => {
     resetToDefaults,
   }
 })
-
