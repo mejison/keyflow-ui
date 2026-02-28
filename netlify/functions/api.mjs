@@ -841,7 +841,7 @@ async function handleSettingsUpdate(event, db) {
 
   await db.collection('user_settings').updateOne(
     { userId: user._id },
-    { $set: update, $setOnInsert: { userId: user._id, ...DEFAULT_SETTINGS } },
+    { $set: update, $setOnInsert: { userId: user._id, createdAt: new Date() } },
     { upsert: true }
   )
 
